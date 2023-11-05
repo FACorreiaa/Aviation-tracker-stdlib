@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="ANALYZE_INJECTED_CODE" value="false" />
+  </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="c013bd4f-727c-4da5-8094-985645879420" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.air.toml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/api/handler/external_api/api.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/api/handler/external_api/auth/auth.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/api/handler/external_api/health/health.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/api/handler/external_api/router.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/api/handler/external_api/server.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/api/handler/handler.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/api/handler/pprof/pprof.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/api/handler/pprof/routes.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/api/handler/pprof/server.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/api/repository/postgres/postgres.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/api/repository/postgres/user/user.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/api/repository/postgres/user/utils.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/api/repository/repository.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/api/service/service.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/api/service/user/user.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/api/structs/user.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/config/config.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/config/config.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/config/jwt_config.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/config/production.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/config/test.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/logs/entry.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/logs/ilogger.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/logs/logger.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/logs/logs.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/logs/utils.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/schema/000001_init.down.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/schema/000001_init.up.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/travis.yml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go File" />
+      </list>
+    </option>
+  </component>
+  <component name="GOROOT" url="file:///usr/local/go" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
+  <component name="ProjectId" id="2XijFnpgE6y4LuoviD6sJM2jQ2C" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "DefaultGoTemplateProperty": "Go File",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.go.formatter.settings.were.checked": "true",
+    "RunOnceActivity.go.migrated.go.modules.settings": "true",
+    "RunOnceActivity.go.modules.automatic.dependencies.download": "true",
+    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "main",
+    "go.import.settings.migrated": "true",
+    "last_opened_file_path": "/Users/fc/Documents/Projects/go-ollama/internal/schema",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "run.code.analysis.last.selected.profile": "pProject Default"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/internal/schema" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/internal" />
+      <recent name="$PROJECT_DIR$/internal/server" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="go build github.com/FACorreiaa/go-ollama" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
+      <module name="go-ollama" />
+      <working_directory value="$PROJECT_DIR$" />
+      <EXTENSION ID="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </EXTENSION>
+      <kind value="PACKAGE" />
+      <package value="github.com/FACorreiaa/go-ollama" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+  <component name="VgoProject">
+    <settings-migrated>true</settings-migrated>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/api/repository/postgres/postgres.go</url>
+          <line>76</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/api/repository/postgres/postgres.go</url>
+          <line>90</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/api/repository/postgres/postgres.go</url>
+          <line>121</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

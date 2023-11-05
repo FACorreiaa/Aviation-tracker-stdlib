@@ -1,0 +1,52 @@
+version: '3.9'
+services:
+  debug:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: debug
+    security_opt:
+      - seccomp:unconfined
+    cap_add:
+      - SYS_PTRACE
+    ports:
+      - "40000:40000"
+    command: "dlv exec --listen=127.0.0.1:40000 --headless=true --api-version=2 --accept-multiclient /stay-healthy-backend"
+  app:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: dev
+    volumes:
+      - .:/opt/app/api
+    environment:
+      SERVER_PORT: ":8080"
+    ports:
+      - "7070:8080"
+    security_opt:
+      - seccomp:unconfined
+    cap_add:
+      - SYS_PTRACE
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_PORT: ${POSTGREST_PORT}
+      POSTGRES_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_SSLMODE: ${POSTGRES_SSLMODE}
+      DB_MAX_CONNECTIONS: ${DB_MAX_CONNECTIONS}
+      MAXCONWAITINGTIME: ${MAXCONWAITINGTIME}
+      DB_MAX_LIFETIME_CONNECTIONS: ${DB_MAX_LIFETIME_CONNECTIONS}
+    ports:
+      - "5432:5432"
+  redis:
+    image: redis:latest
+    restart: always
+    environment:
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_DB: ${REDIS_DB}
+    ports:
+      - "6379:6379"

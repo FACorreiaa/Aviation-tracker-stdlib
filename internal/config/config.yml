@@ -1,0 +1,41 @@
+mode: "dev"
+dotenv: ".env"
+
+handlers:
+  externalAPI:
+    port: "8081"
+    certFile: "./data/localhost.crt"
+    keyFile: "./data/localhost.key"
+    enableTLS: false
+  internalAPI:
+    port: "8083"
+    certFile: "./data/localhost.crt"
+    keyFile: "./data/localhost.key"
+    enableTLS: false
+  pprof:
+    port: "8082"
+    certFile: "./data/localhost.crt"
+    keyFile: "./data/localhost.key"
+    enableTLS: false
+  prometheus:
+    port: "8084"
+    certFile: "./data/localhost.crt"
+    keyFile: "./data/localhost.key"
+    enableTLS: false
+
+services:
+  auth:
+    authTokenTTL: 5
+    refreshTokenTTL: 20160
+    pubKeyFile: "./data/id_rsa.pub"
+    pemKeyFile: "./data/id_rsa"
+
+repositories:
+  postgres:
+    scheme: "postgres"
+    host: "ep-winter-hall-10743160-pooler.us-east-2.aws.neon.tech"
+    port: "26257"
+    username: "FACorreiaa"
+    db: "Ollama-dev"
+    SSLMODE: "verify-full"
+    MAXCONWAITINGTIME: 1000
