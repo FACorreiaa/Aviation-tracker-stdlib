@@ -8,37 +8,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c013bd4f-727c-4da5-8094-985645879420" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.air.toml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/api/handler/external_api/api.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/api/handler/external_api/auth/auth.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/api/handler/external_api/health/health.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/api/handler/external_api/router.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/api/handler/external_api/server.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/api/handler/handler.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/api/handler/pprof/pprof.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/api/handler/pprof/routes.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/api/handler/pprof/server.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/api/repository/postgres/postgres.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/api/repository/postgres/user/user.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/api/repository/postgres/user/utils.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/api/repository/repository.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/api/service/service.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/api/service/user/user.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/api/structs/user.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/config/config.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/config/config.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/config/jwt_config.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/config/production.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/config/test.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/logs/entry.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/logs/ilogger.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/logs/logger.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/logs/logs.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/logs/utils.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/schema/000001_init.down.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/schema/000001_init.up.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/travis.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,25 +44,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "DefaultGoTemplateProperty": "Go File",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.go.formatter.settings.were.checked": "true",
-    "RunOnceActivity.go.migrated.go.modules.settings": "true",
-    "RunOnceActivity.go.modules.automatic.dependencies.download": "true",
-    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "main",
-    "go.import.settings.migrated": "true",
-    "last_opened_file_path": "/Users/fc/Documents/Projects/go-ollama/internal/schema",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "run.code.analysis.last.selected.profile": "pProject Default"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.automatic.dependencies.download&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/fc/Documents/Projects/go-ollama/internal/schema&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/internal/schema" />
