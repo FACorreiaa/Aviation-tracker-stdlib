@@ -1,7 +1,6 @@
 package postgres
 
 import (
-	"fmt"
 	"github.com/FACorreiaa/go-ollama/internal/logs"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
@@ -72,7 +71,6 @@ func NewConfig(
 
 func (c Config) formatDSN() string {
 	password := os.Getenv("DB_PASSWORD")
-	fmt.Printf("Password from env: %s\n", password) // Add this line for debugging
 
 	u := url.URL{
 		Scheme: c.scheme,

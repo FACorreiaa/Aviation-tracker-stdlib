@@ -6,6 +6,7 @@ import (
 	"github.com/FACorreiaa/go-ollama/internal/api/handler/pprof"
 	"github.com/FACorreiaa/go-ollama/internal/api/service"
 	"github.com/FACorreiaa/go-ollama/internal/logs"
+	"github.com/gin-gonic/gin"
 	"os"
 	"sync"
 	"syscall"
@@ -50,6 +51,15 @@ func NewHandler(
 }
 
 func (h *Handler) Handle(exitSignal *os.Signal) {
+	r := gin.New()
+	// Global middleware
+	// Logger middleware will write the logs to gin.DefaultWriter even if you set with GIN_MODE=release.
+	// By default gin.DefaultWriter = os.Stdout
+	r.Use(gin.Logger())
+
+	// Recovery middleware recovers from any panics and writes a 500 if there was one.
+	r.Use(gin.Recovery())
+
 	h.externalApi = external_api.New(h.config.externalApiConfig, h.service)
 	h.pprof = pprof.New(h.config.pprofConfig)
 	go func() {

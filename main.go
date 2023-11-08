@@ -13,6 +13,7 @@ import (
 	"github.com/FACorreiaa/go-ollama/internal/api/service"
 	configs "github.com/FACorreiaa/go-ollama/internal/config"
 	"github.com/FACorreiaa/go-ollama/internal/logs"
+	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"net/http"
 	"os"
@@ -22,12 +23,18 @@ import (
 )
 
 func main() {
+	server := gin.New()
+	server.LoadHTMLFiles("templates/index.html")
+	server.Static("/css", "./templates/css")
+	server.Use(gin.Recovery(), logs.GinLogger())
+
 	environment := flag.String("e", "development", "")
 	flag.Usage = func() {
 		fmt.Println("Usage: server -e {mode}")
 		os.Exit(1)
 	}
-	logs.InitDefaultLogger()
+	//logs.InitDefaultLogger()
+
 	config, err := configs.InitConfig(*environment)
 	if err != nil {
 		logs.DefaultLogger.WithError(err).Error("Config was not configure")
