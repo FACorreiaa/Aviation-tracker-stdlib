@@ -3,15 +3,17 @@ package repository
 import (
 	"github.com/FACorreiaa/go-ollama/internal/api/repository/postgres"
 	"github.com/FACorreiaa/go-ollama/internal/api/repository/postgres/user"
+	"github.com/FACorreiaa/go-ollama/internal/api/repository/redis"
 	"github.com/FACorreiaa/go-ollama/internal/api/structs"
 )
 
 type Config struct {
 	postgresConfig postgres.Config
+	redisConfig    redis.Config
 }
 
-func NewConfig(postgresConfig postgres.Config) Config {
-	return Config{postgresConfig: postgresConfig}
+func NewConfig(postgresConfig postgres.Config, redisConfig redis.Config) Config {
+	return Config{postgresConfig: postgresConfig, redisConfig: redisConfig}
 }
 
 type User interface {
@@ -26,7 +28,8 @@ type Repository struct {
 
 func NewRepository(config Config) *Repository {
 	psql := postgres.NewPostgres(config.postgresConfig)
+	redis := redis.NewRedis(config.redisConfig)
 	return &Repository{
-		User: user.NewRepository(psql.GetDB()),
+		User: user.NewRepository(psql.GetDB(), redis.GetDB()),
 	}
 }

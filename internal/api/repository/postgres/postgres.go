@@ -1,8 +1,8 @@
 package postgres
 
 import (
-	"github.com/FACorreiaa/go-ollama/internal/logs"
 	"github.com/joho/godotenv"
+	"go.uber.org/zap"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log"
@@ -33,6 +33,7 @@ func (m QueryExecMode) value() string {
 }
 
 // OptionParams string `env:"DB_OPTION_PARAMS" envDefault:""`
+
 type Config struct {
 	scheme               string
 	host                 string
@@ -119,7 +120,7 @@ func newDB(config Config) (*gorm.DB, error) {
 func NewPostgres(config Config) *Postgres {
 	db, err := newDB(config)
 	if err != nil {
-		logs.DefaultLogger.WithError(err).Fatal("Error on postgres init")
+		zap.L().Fatal("Error on postgres init")
 		syscall.Kill(syscall.Getpid(), syscall.SIGINT)
 	}
 	return &Postgres{db: db}

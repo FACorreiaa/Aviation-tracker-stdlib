@@ -89,3 +89,5 @@ vet:
 lint:
 	golangci-lint run --enable-all
 
+start-redis:
+	redis-server --port 6969

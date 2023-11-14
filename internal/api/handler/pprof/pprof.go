@@ -2,8 +2,8 @@ package pprof
 
 import (
 	"context"
-	"github.com/FACorreiaa/go-ollama/internal/logs"
 	"github.com/gorilla/mux"
+	"go.uber.org/zap"
 	"syscall"
 )
 
@@ -21,7 +21,7 @@ func NewConfig(
 	enableTls bool,
 ) Config {
 	if enableTls && (certFile == "" || keyFile == "") {
-		logs.DefaultLogger.Fatal("Tls is enabled but cert file or key file doesn't have a path")
+		zap.L().Fatal("Tls is enabled but cert file or key file doesn't have a path")
 		syscall.Kill(syscall.Getpid(), syscall.SIGINT)
 	}
 	return Config{

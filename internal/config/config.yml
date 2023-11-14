@@ -39,3 +39,6 @@ repositories:
     db: "Ollama-dev"
     SSLMODE: "verify-full"
     MAXCONWAITINGTIME: 1000
+  redis:
+    redis_password: ""
+    redis_db: 0

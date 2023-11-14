@@ -31,6 +31,10 @@ type Config struct {
 			SSLMode            string `mapstructure:"sslmode"`
 			MaxConnWaitingTime int    `mapstructure:"maxConnWaitingTime"`
 		}
+		Redis struct {
+			RedisPassword string `mapstructure:"redis_password"`
+			RedisDb       int    `mapstructure:"redis_db"`
+		}
 	}
 }
 

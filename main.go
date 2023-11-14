@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"flag"
 	"fmt"
 	"github.com/FACorreiaa/go-ollama/internal/api/handler"
@@ -10,11 +9,12 @@ import (
 	"github.com/FACorreiaa/go-ollama/internal/api/handler/pprof"
 	"github.com/FACorreiaa/go-ollama/internal/api/repository"
 	"github.com/FACorreiaa/go-ollama/internal/api/repository/postgres"
+	"github.com/FACorreiaa/go-ollama/internal/api/repository/redis"
 	"github.com/FACorreiaa/go-ollama/internal/api/service"
 	configs "github.com/FACorreiaa/go-ollama/internal/config"
 	"github.com/FACorreiaa/go-ollama/internal/logs"
 	"github.com/joho/godotenv"
-	"net/http"
+	"go.uber.org/zap"
 	"os"
 	"os/signal"
 	"syscall"
@@ -32,19 +32,17 @@ func main() {
 
 	config, err := configs.InitConfig(*environment)
 	if err != nil {
-		logs.DefaultLogger.WithError(err).Error("Config was not configure")
+		zap.L().Error("Config was not configure")
 	}
-	logs.DefaultLogger.Info("Config was successfully imported")
-	logs.DefaultLogger.ConfigureLogger(
-		getLogFormatter(config.Mode),
-	)
-	logs.DefaultLogger.Info("Main logger was initialized successfully")
+	zap.L().Info("Config was successfully imported")
+
+	zap.L().Info("Main logger was initialized successfully")
 
 	if err := godotenv.Load(config.Dotenv); err != nil && config.Dotenv != "" {
-		logs.DefaultLogger.WithError(err).Fatal("Dotenv was not loaded")
+		zap.L().Fatal("Dotenv was not loaded")
 		os.Exit(1)
 	}
-	logs.DefaultLogger.Info("Dotenv file was successfully loaded")
+	zap.L().Info("Dotenv file was successfully loaded")
 
 	repositories := repository.NewRepository(
 		repository.NewConfig(
@@ -59,11 +57,16 @@ func main() {
 				time.Duration(config.Repositories.Postgres.MaxConnWaitingTime)*time.Second,
 				postgres.CacheStatement,
 			),
+			redis.NewRedisConfig(
+				os.Getenv("REDIS_HOST"),
+				config.Repositories.Redis.RedisPassword,
+				config.Repositories.Redis.RedisDb,
+			),
 		),
 	)
-	logs.DefaultLogger.Info("Repository was initialized")
+	zap.L().Info("Repository was initialized")
 	services := service.NewService(repositories)
-	logs.DefaultLogger.Info("Service was initialized")
+	zap.L().Info("Service was initialized")
 	handlers := handler.NewHandler(
 		handler.NewConfig(
 			external_api.NewConfig(
@@ -81,7 +84,7 @@ func main() {
 		),
 		services,
 	)
-	logs.DefaultLogger.Info("Handler was initialized")
+	zap.L().Info("Handler was initialized")
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(
@@ -90,50 +93,9 @@ func main() {
 	)
 	var exitSignal os.Signal
 	handlers.Handle(&exitSignal)
-	logs.DefaultLogger.Info("Handler was successfully started")
+	zap.L().Info("Handler was successfully started")
 	exitSignal = <-quit
-	logs.DefaultLogger.Info("Exit...")
+	zap.L().Info("Exit...")
 	handlers.Shutdown(context.Background())
-	logs.DefaultLogger.Info("Handlers are shutdown")
-}
-
-//func getHandlerMode(mode string) handler.Mode {
-//	switch mode {
-//	case "prod":
-//		return handler.Production
-//	case "test":
-//		return handler.Test
-//	case "dev":
-//		return handler.Development
-//	default:
-//		logs.DefaultLogger.Fatal("Mode has no match")
-//		return ""
-//	}
-//}
-
-func getLogFormatter(mode string) logs.Formatter {
-	switch mode {
-	case "prod":
-		return logs.JSONFormatter
-	case "test":
-		return logs.DefaultFormatter
-	case "dev":
-		return logs.DefaultFormatter
-	default:
-		logs.DefaultLogger.Fatal("Mode has no match")
-		os.Exit(1)
-		return 0
-	}
-}
-
-func HealthCheck(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	res := map[string]interface{}{
-		"data": "Server is up and running",
-	}
-
-	err := json.NewEncoder(w).Encode(res)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
+	zap.L().Info("Handlers are shutdown")
 }

@@ -2,15 +2,17 @@ package user
 
 import (
 	"github.com/FACorreiaa/go-ollama/internal/api/structs"
+	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 )
 
 type Repository struct {
-	db *gorm.DB
+	db    *gorm.DB
+	redis *redis.Client
 }
 
-func NewRepository(db *gorm.DB) *Repository {
-	return &Repository{db: db}
+func NewRepository(db *gorm.DB, redis *redis.Client) *Repository {
+	return &Repository{db: db, redis: redis}
 }
 
 func (r *Repository) Create(user structs.User) (int, error) {

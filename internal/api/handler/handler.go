@@ -5,7 +5,7 @@ import (
 	"github.com/FACorreiaa/go-ollama/internal/api/handler/external_api"
 	"github.com/FACorreiaa/go-ollama/internal/api/handler/pprof"
 	"github.com/FACorreiaa/go-ollama/internal/api/service"
-	"github.com/FACorreiaa/go-ollama/internal/logs"
+	"go.uber.org/zap"
 	"os"
 	"sync"
 	"syscall"
@@ -63,13 +63,13 @@ func (h *Handler) Handle(exitSignal *os.Signal) {
 	h.pprof = pprof.New(h.config.pprofConfig)
 	go func() {
 		if err := h.pprof.Run(); err != nil && exitSignal == nil {
-			logs.DefaultLogger.WithError(err).Fatal("Pprof server was closed unexpectedly")
+			zap.L().Fatal("Pprof server was closed unexpectedly")
 			syscall.Kill(syscall.Getpid(), syscall.SIGINT)
 		}
 	}()
 	go func() {
 		if err := h.externalApi.Run(); err != nil && exitSignal == nil {
-			logs.DefaultLogger.WithError(err).Fatal("REST API Server was closed unexpectedly")
+			zap.L().Fatal("REST API Server was closed unexpectedly")
 			syscall.Kill(syscall.Getpid(), syscall.SIGQUIT)
 		}
 	}()
@@ -80,13 +80,13 @@ func (h *Handler) Shutdown(ctx context.Context) {
 	wg.Add(2)
 	go func() {
 		if err := h.externalApi.Shutdown(ctx); err != nil {
-			logs.DefaultLogger.WithError(err).Fatal("Error on restApi shutdown")
+			zap.L().Fatal("Error on restApi shutdown")
 		}
 		wg.Done()
 	}()
 	go func() {
 		if err := h.pprof.Shutdown(ctx); err != nil {
-			logs.DefaultLogger.WithError(err).Fatal("Error on pprof shutdown")
+			zap.L().Fatal("Error on pprof shutdown")
 		}
 		wg.Done()
 	}()
