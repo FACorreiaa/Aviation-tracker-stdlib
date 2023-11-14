@@ -3,7 +3,7 @@ package pprof
 import (
 	"context"
 	"github.com/FACorreiaa/go-ollama/internal/logs"
-	"github.com/gin-gonic/gin"
+	"github.com/gorilla/mux"
 	"syscall"
 )
 
@@ -38,7 +38,7 @@ type Pprof interface {
 }
 
 func New(config Config) Pprof {
-	handler := gin.New()
+	handler := mux.NewRouter()
 	InitPprof(handler)
 	return &server{
 		port:      config.port,

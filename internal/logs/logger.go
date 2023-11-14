@@ -2,11 +2,8 @@ package logs
 
 import (
 	"context"
-	"fmt"
-	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"os"
-	"time"
 )
 
 type Formatter int
@@ -26,21 +23,8 @@ func NewLogger() Logger {
 	}
 }
 
-//func InitDefaultLogger() {
-//	DefaultLogger = NewLogger()
-//}
-
-func GinLogger() gin.HandlerFunc {
-	return gin.LoggerWithFormatter(func(param gin.LogFormatterParams) string {
-		return fmt.Sprintf("%s - [%s] %s %s %d %s \n",
-			param.ClientIP,
-			param.TimeStamp.Format(time.RFC822),
-			param.Method,
-			param.Path,
-			param.StatusCode,
-			param.Latency,
-		)
-	})
+func InitDefaultLogger() {
+	DefaultLogger = NewLogger()
 }
 
 func (l *logger) ConfigureLogger(formatter Formatter) {

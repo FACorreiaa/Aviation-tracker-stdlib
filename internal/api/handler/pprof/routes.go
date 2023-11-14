@@ -1,31 +1,37 @@
 package pprof
 
 import (
-	"github.com/gin-gonic/gin"
+	"github.com/gorilla/mux"
 	"net/http"
 	"net/http/pprof"
 )
 
-func InitPprof(router *gin.Engine) {
-	prefixRouter := router.Group("/debug/pprof")
-	{
-		prefixRouter.GET("/", gin.WrapF(pprof.Index))
-		prefixRouter.GET("/cmdline", gin.WrapF(pprof.Cmdline))
-		prefixRouter.GET("/profile", gin.WrapF(pprof.Profile))
-		prefixRouter.POST("/symbol", gin.WrapF(pprof.Symbol))
-		prefixRouter.GET("/symbol", gin.WrapF(pprof.Symbol))
-		prefixRouter.GET("/trace", gin.WrapF(pprof.Trace))
-		prefixRouter.GET("/allocs", gin.WrapH(pprof.Handler("allocs")))
-		prefixRouter.GET("/block", gin.WrapH(pprof.Handler("block")))
-		prefixRouter.GET("/goroutine", gin.WrapH(pprof.Handler("goroutine")))
-		prefixRouter.GET("/heap", gin.WrapH(pprof.Handler("heap")))
-		prefixRouter.GET("/mutex", gin.WrapH(pprof.Handler("mutex")))
-		prefixRouter.GET("/threadcreate", gin.WrapH(pprof.Handler("threadcreate")))
+func InitPprof(router *mux.Router) {
+	prefixRouter := router.PathPrefix("/debug/pprof").Subrouter()
+	//prefixRouter.Use(middleware.NoCache)
+	prefixRouter.HandleFunc("/", gorillaWrapper(pprof.Index)).Methods("GET")
+	prefixRouter.HandleFunc("/cmdline", gorillaWrapper(pprof.Cmdline)).Methods("GET")
+	prefixRouter.HandleFunc("/profile", gorillaWrapper(pprof.Profile)).Methods("GET")
+	prefixRouter.HandleFunc("/symbol", gorillaWrapper(pprof.Symbol)).Methods("GET")
+	prefixRouter.HandleFunc("/symbol", gorillaWrapper(pprof.Symbol)).Methods("POST")
+	prefixRouter.HandleFunc("/trace", gorillaWrapper(pprof.Trace)).Methods("GET")
+	prefixRouter.HandleFunc("/allocs", gorillaWrapper(handlerFunc(pprof.Handler("allocs")))).Methods("GET")
+	prefixRouter.HandleFunc("/block", gorillaWrapper(handlerFunc(pprof.Handler("allocs")))).Methods("GET")
+	prefixRouter.HandleFunc("/goroutine", gorillaWrapper(handlerFunc(pprof.Handler("allocs")))).Methods("GET")
+	prefixRouter.HandleFunc("/heap", gorillaWrapper(handlerFunc(pprof.Handler("allocs")))).Methods("GET")
+	prefixRouter.HandleFunc("/mutex", gorillaWrapper(handlerFunc(pprof.Handler("allocs")))).Methods("GET")
+	prefixRouter.HandleFunc("/threadcreate", gorillaWrapper(handlerFunc(pprof.Handler("allocs")))).Methods("GET")
+}
+
+func handlerFunc(h http.Handler) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		h.ServeHTTP(w, r)
 	}
 }
 
-func ginWrapper(fn func(w http.ResponseWriter, r *http.Request)) func(ctx *gin.Context) {
-	return func(ctx *gin.Context) {
-		fn(ctx.Writer, ctx.Request)
+func gorillaWrapper(fn http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+		fn(w, r.WithContext(ctx))
 	}
 }

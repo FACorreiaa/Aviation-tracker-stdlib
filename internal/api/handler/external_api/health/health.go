@@ -1,12 +1,20 @@
 package health
 
 import (
-	"github.com/gin-gonic/gin"
+	"encoding/json"
 	"net/http"
 )
 
 type HandlerHealth struct{}
 
-func (h HandlerHealth) Status(c *gin.Context) {
-	c.String(http.StatusOK, "Working!")
+func (h HandlerHealth) HealthCheck(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	res := map[string]interface{}{
+		"data": "Server is up and running",
+	}
+
+	err := json.NewEncoder(w).Encode(res)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }

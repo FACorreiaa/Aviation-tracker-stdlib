@@ -1,45 +1,48 @@
 package external_api
 
 import (
-	"github.com/FACorreiaa/go-ollama/internal/api/handler/external_api/auth"
+	"flag"
 	"github.com/FACorreiaa/go-ollama/internal/api/handler/external_api/health"
-	"github.com/FACorreiaa/go-ollama/internal/api/handler/external_api/index"
 	"github.com/FACorreiaa/go-ollama/internal/api/service"
-	"github.com/gin-gonic/gin"
-	"html/template"
-	"strings"
+	"github.com/gorilla/mux"
+	"net/http"
+	"path/filepath"
+	"text/template"
 )
 
-func initRouter(s *service.Service) *gin.Engine {
-	gin.SetMode(gin.DebugMode)
-	router := gin.Default()
-	authHandler := auth.NewHandler(s)
-	router.SetFuncMap(template.FuncMap{
-		"upper": strings.ToUpper,
+func initRouter(s *service.Service) *mux.Router {
+	var dir string
+
+	flag.StringVar(&dir, "dir", "./internal/api/handler/external_api/static/templates", "the directory to serve files from. Defaults to the current dir")
+	flag.Parse()
+
+	r := mux.NewRouter()
+	handlerHealth := new(health.HandlerHealth)
+	//check server
+	r.HandleFunc("/health", handlerHealth.HealthCheck).Methods("GET")
+
+	templates := template.Must(template.ParseFiles(
+		filepath.Join(dir, "header.tmpl"),
+		filepath.Join(dir, "index.html"),
+	))
+
+	// Render your template
+	//err := templates.ExecuteTemplate(w, "base.html", nil)
+	//if err != nil {
+	//	http.Error(w, err.Error(), http.StatusInternalServerError)
+	//}
+
+	r.PathPrefix("/v1").Handler(http.StripPrefix("/v1", http.FileServer(http.Dir(dir))))
+
+	r.HandleFunc("/index", func(w http.ResponseWriter, r *http.Request) {
+		err := templates.ExecuteTemplate(w, "index.html", nil)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		//http.ServeFile(w, r, "index.html")
 	})
-	router.Use(gin.Recovery())
+	//http.Handle("/", r)
 
-	router.Static("/css", "./templates/css")
-	router.LoadHTMLFiles("./templates/index.html")
-
-	//router.LoadHTMLGlob("templates/*.html")
-	v1 := router.Group("/v1")
-	{
-		authGroup := v1.Group("/user")
-		{
-			authGroup.GET("/sign-up", authHandler.SignUp)
-			authGroup.POST("/sign-in", authHandler.SignUp)
-		}
-
-		indexGroup := v1.Group("/index")
-		{
-			indexGroup.GET("/", index.Home)
-		}
-	}
-
-	health := new(health.HandlerHealth)
-
-	router.GET("/health", health.Status)
-	return router
+	return r
 
 }
