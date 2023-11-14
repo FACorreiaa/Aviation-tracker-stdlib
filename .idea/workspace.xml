@@ -8,32 +8,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c013bd4f-727c-4da5-8094-985645879420" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/dump.rdb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/api/repository/redis/redis.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/api/handler/external_api/api.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/api/handler/external_api/api.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/api/handler/external_api/router.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/api/handler/external_api/router.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/api/handler/external_api/static/templates/footer.html" beforeDir="false" afterPath="$PROJECT_DIR$/internal/api/handler/external_api/static/templates/footer.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/api/handler/external_api/static/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/internal/api/handler/external_api/static/templates/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/api/handler/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/api/handler/handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/api/handler/pprof/pprof.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/api/handler/pprof/pprof.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/api/repository/postgres/postgres.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/api/repository/postgres/postgres.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/api/repository/postgres/user/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/api/repository/postgres/user/user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/api/repository/repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/api/repository/repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/api/structs/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/api/structs/user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/config/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/config/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/internal/config/config.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/logs/entry.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/logs/ilogger.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/logs/logger.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/logs/logger.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/logs/logs.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/logs/utils.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tmp/build-errors.log" beforeDir="false" afterPath="$PROJECT_DIR$/tmp/build-errors.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tmp/main" beforeDir="false" afterPath="$PROJECT_DIR$/tmp/main" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

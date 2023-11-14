@@ -17,9 +17,6 @@ CMD ["air"]
 ### CONFIGURE DEBUG
 FROM dev as debug
 
-LABEL maintainer="a11199"
-LABEL description="Base image for building Go applications with Air and Delve."
-
 WORKDIR /opt/app/api
 RUN CGO_ENABLED=0 go install github.com/go-delve/delve/cmd/dlv@latest
 COPY . .
@@ -45,13 +42,13 @@ COPY . .
 ENV CGO_ENABLED=0
 
 RUN go get -d -v ./... && \
-    go build -o /tmp/stay-healthy-backend ./*.go
+    go build -o /tmp/go-ollama ./*.go
 
-ENTRYPOINT ["/tmp/stay-healthy-backend"]
+ENTRYPOINT ["/tmp/go-ollamad"]
 
 FROM busybox
 
 COPY --from=built /tmp/stay-healthy-backend /usr/bin/stay-healthy-backend
-CMD ["stay-healthy-backend", "start"]
+CMD ["go-ollama", "start"]
 
 #"--security-opt='apparmor=unconfined'", "--cap-add=SYS_PTRACE"
