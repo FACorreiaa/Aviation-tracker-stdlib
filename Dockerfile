@@ -1,54 +1,42 @@
+FROM node:latest as assets
+WORKDIR /app
+COPY package.json ./
+COPY package-lock.json ./
+COPY postcss.config.cjs ./
+COPY fonts.css ./
+RUN mkdir -p controller/static/css controller/static/fonts
+RUN npm install --ci
+RUN npm run fonts
+
 ##CONFIGURE AIR
 FROM golang:1.21 as base
-
 LABEL maintainer="a11199"
 LABEL description="Base image for building Go applications with Air and Delve."
-
-## Create another stage called "dev" that is based off of our "base" stage (so we have golang available to us)
 FROM base as dev
-
-## Install the air binary so we get live code-reloading when we save files
 RUN curl -sSfL https://raw.githubusercontent.com/cosmtrek/air/master/install.sh | sh -s -- -b $(go env GOPATH)/bin
-
-# Run the air command in the directory where our code will live
-WORKDIR /opt/app/api
+WORKDIR /app
 CMD ["air"]
 
 ### CONFIGURE DEBUG
 FROM dev as debug
-
-WORKDIR /opt/app/api
+LABEL maintainer="a11199"
+LABEL description="Base image for building Go applications with Air and Delve."
+WORKDIR /app
 RUN CGO_ENABLED=0 go install github.com/go-delve/delve/cmd/dlv@latest
 COPY . .
 COPY go.mod go.sum ./
 RUN go mod download
-
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -gcflags "all=-N -l" -o /stay-healthy-backend ./*.go
 CMD ["dlv", "--listen=127.0.0.1:40000", "--headless=true", "--api-version=2", "exec", "--accept-multiclient",  "/stay-healthy-backend"]
 
-### MAIN
-FROM debug as built
-
-LABEL maintainer="a11199"
-LABEL description="Base image for building Go applications with Air and Delve."
-
-WORKDIR /go/app/api
-
-COPY go.mod go.sum ./
-RUN go mod download && go mod verify
-
+FROM golang:latest
+WORKDIR /app
+COPY go.mod ./
+COPY go.sum ./
+RUN go mod download
 COPY . .
-
-ENV CGO_ENABLED=0
-
-RUN go get -d -v ./... && \
-    go build -o /tmp/go-ollama ./*.go
-
-ENTRYPOINT ["/tmp/go-ollamad"]
-
-FROM busybox
-
-COPY --from=built /tmp/stay-healthy-backend /usr/bin/stay-healthy-backend
-CMD ["go-ollama", "start"]
-
-#"--security-opt='apparmor=unconfined'", "--cap-add=SYS_PTRACE"
+COPY --from=assets /app/controller/static/css/* ./controller/static/css/
+COPY --from=assets /app/controller/static/fonts/* ./controller/static/fonts/
+RUN CGO_ENABLED=0 go build -o /app/server
+EXPOSE 6969
+ENTRYPOINT ["/app/server"]

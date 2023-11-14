@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/go-ollama.iml" filepath="$PROJECT_DIR$/.idea/go-ollama.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../StayHealthy/stay-healthy-backend/.idea/stay-healthy-backend.iml" filepath="$PROJECT_DIR$/../StayHealthy/stay-healthy-backend/.idea/stay-healthy-backend.iml" />
     </modules>
   </component>
 </project>

@@ -1,21 +1,17 @@
-project_name = stay-healthy-backend
-image_name = stay-healthy-backend
+.PHONY: build clean
+project_name = go-ollama-assistant
+image_name = go-ollama-assistant
 
 build:
-	GOARCH=amd64 GOOS=darwin go build -o ${BINARY_NAME}-darwin main.go
-	GOARCH=amd64 GOOS=linux go build -o ${BINARY_NAME}-linux main.go
-	GOARCH=amd64 GOOS=windows go build -o ${BINARY_NAME}-windows main.go
-
-run: build
-	./${BINARY_NAME}
+	npm run fonts
+	go build -o server-exe
 
 clean:
-	go clean
-	rm ${BINARY_NAME}-darwin
-	rm ${BINARY_NAME}-linux
-	rm ${BINARY_NAME}-windows
+	find controller/static/fonts -type f ! -name "ionicons*" -delete
+	rm controller/static/css/fonts.css
+	rm server-exe
 
-run-dev:
+run-local:
 	go run main.go
 
 requirements:
@@ -36,21 +32,21 @@ push:
 	docker build -t $(image_name) .
 
 build-no-cache:
-	docker build --no-cache -t $(image_name) . --security-opt=seccomp:unconfined
+	docker build --no-cache -t $(image_name) .
 
-up-silent:
-	make delete-container-if-exist
-	docker run -d -p 3000:3000 --name $(project_name) $(image_name) ./main
-
-up-silent-prefork:
-	make delete-container-if-exist
-	docker run -d -p 3000:3000 --name $(project_name) $(image_name) ./app -prod
-
+#up-silent:
+#	make delete-container-if-exist
+#	docker run -d -p 3000:3000 --name $(project_name) $(image_name) ./main
+#
+#up-silent-prefork:
+#	make delete-container-if-exist
+#	docker run -d -p 3000:3000 --name $(project_name) $(image_name) ./app -prod
+#
 delete-container-if-exist:
 	docker stop $(project_name) || true && docker rm $(project_name) || true
 
-shell:
-	docker exec -it $(project_name) /bin/sh
+#shell:
+#	docker exec -it $(project_name) /bin/sh
 
 compose-up:
 	make delete-container-if-exist
@@ -66,13 +62,10 @@ swag-init:
 	swag init --parseDependency
 
 go-test:
-	go test ./...
+	go test -v
 
 go-bench:
 	go test -bench .
-
-test_coverage:
-	go test ./... -coverprofile=coverage.out
 
 run-app:
 	docker compose run --rm app air init
@@ -80,25 +73,4 @@ run-app:
 run-tidy:
 	docker compose run --rm app go mod tidy
 
-dep:
-	go mod download
 
-vet:
-	go vet
-
-lint:
-	golangci-lint run --enable-all
-
-start-redis:
-	redis-server --port 6969
-
-.PHONY: build clean
-
-build:
-	npm run fonts
-	go build -o server-exe
-
-clean:
-	find controller/static/fonts -type f ! -name "ionicons*" -delete
-	rm controller/static/css/fonts.css
-	rm server-exe

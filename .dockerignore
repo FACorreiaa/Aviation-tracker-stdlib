@@ -1,16 +1,6 @@
-# Files
-.dockerignore
-.editorconfig
-.gitignore
-.env.example
-Dockerfile
-Makefile
-LICENSE
-**/*.md
-**/*_test.go
-*.out
-
-# Folders
-.git/
-.github/
-build/
+.direnv
+.data
+node_modules
+controller/static/fonts/*
+!controller/static/fonts/ionicons*
+controller/static/css/fonts.css
