@@ -1,6 +1,6 @@
 .PHONY: build clean
-project_name = go-ollama-assistant
-image_name = go-ollama-assistant
+project_name = gollama-assistant
+image_name = gollama-assistant
 
 build:
 	npm run fonts
@@ -50,7 +50,7 @@ delete-container-if-exist:
 
 compose-up:
 	make delete-container-if-exist
-	docker compose up -d
+	docker-compose up -d
 
 stop:
 	docker stop $(project_name)

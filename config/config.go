@@ -2,6 +2,8 @@ package config
 
 import (
 	"fmt"
+	"github.com/joho/godotenv"
+	"log"
 	"log/slog"
 	"net/url"
 	"os"
@@ -88,14 +90,27 @@ func NewLogConfig() *LogConfig {
 }
 
 func NewDatabaseConfig() (*DatabaseConfig, error) {
+	err := godotenv.Load(".env")
+	if err != nil {
+		fmt.Println(err)
+		log.Fatal("Error loading .env file")
+	}
+
+	if os.Getenv("APP_ENV") == "dev" {
+		if err != nil {
+			fmt.Println(err)
+			log.Fatal("Error loading .env file")
+		}
+	}
+
 	host := GetEnv("DB_HOST", "localhost")
-	port, err := strconv.Atoi(GetEnv("DB_PORT", "5432"))
+	port, err := strconv.Atoi(GetEnv("DB_PORT", "5435"))
 	if err != nil {
 		return nil, fmt.Errorf("invalid DB_PORT: %w", err)
 	}
 	user := GetEnv("DB_USER", "postgres")
 	pass := GetEnv("DB_PASS", "postgres")
-	dbname := GetEnv("DB_NAME", "gollama-assistant")
+	dbname := GetEnv("DB_NAME", "Ollama-dev")
 	schema := GetEnv("DB_SCHEMA", "")
 
 	query := url.Values{
@@ -113,6 +128,7 @@ func NewDatabaseConfig() (*DatabaseConfig, error) {
 		RawQuery: query.Encode(),
 	}
 
+	println(connURL.String())
 	return &DatabaseConfig{
 		ConnectionURL: connURL.String(),
 	}, nil

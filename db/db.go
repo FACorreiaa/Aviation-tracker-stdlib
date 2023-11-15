@@ -31,7 +31,7 @@ func Init(connectionURL string) (*pgxpool.Pool, error) {
 }
 
 func Migrate(conn *pgxpool.Pool) error {
-
+	//migrate db
 	slog.Info("Running migrations")
 	ctx := context.Background()
 	files, err := migrationFS.ReadDir("migrations")

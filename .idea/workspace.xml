@@ -8,84 +8,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c013bd4f-727c-4da5-8094-985645879420" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.envrc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config/config.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/controller/auth_middleware.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/controller/controller.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/controller/home.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/controller/html/home.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/controller/html/layout.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/controller/html/login.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/controller/html/register.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/controller/html/settings.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/controller/layout.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/controller/login.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/controller/register.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/controller/settings.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/controller/static/css/ionicons.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/controller/static/css/main.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/controller/static/favicon.ico" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/controller/static/fonts/ionicons.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/controller/static/fonts/ionicons.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/controller/static/fonts/ionicons.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/controller/static/fonts/ionicons.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/controller/static/js/htmx.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/account/account.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/account/login.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/account/register.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/db/db.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/db/migrations/1_setup.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/db/migrations/2_user.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docker-compose.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flake.lock" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flake.nix" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fonts.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/logfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pgdev" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/postcss.config.cjs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.dockerignore" beforeDir="false" afterPath="$PROJECT_DIR$/.dockerignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.github/workflows/golangci-lint.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.golangci.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tmp/main" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/go-ollama.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/go-ollama.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Modelfile" beforeDir="false" afterPath="$PROJECT_DIR$/Modelfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/db.go" beforeDir="false" afterPath="$PROJECT_DIR$/db/db.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/api/handler/external_api/api.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/api/handler/external_api/health/health.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/api/handler/external_api/router.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/api/handler/external_api/server.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/api/handler/external_api/static/templates/footer.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/api/handler/external_api/static/templates/header.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/api/handler/external_api/static/templates/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/api/handler/handler.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/api/handler/pprof/pprof.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/api/handler/pprof/routes.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/api/handler/pprof/server.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/api/repository/postgres/postgres.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/api/repository/postgres/user/user.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/api/repository/postgres/user/utils.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/api/repository/redis/redis.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/api/repository/repository.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/api/service/service.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/api/service/user/user.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/api/structs/user.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/config/config.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/config/jwt_config.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/config/production.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/config/test.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/logs/logger.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/schema/000001_init.down.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/schema/000001_init.up.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tmp/build-errors.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tmp/main" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/config/config.yml" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -103,12 +40,13 @@
   <component name="GOROOT" url="file:///usr/local/go" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="ROOT_SYNC" value="SYNC" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="ProjectErrors" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
@@ -155,7 +93,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Docker.docker-compose.yaml.db: Compose Deployment">
+  <component name="RunManager" selected="Docker.docker-compose.yaml: Compose Deployment">
     <configuration name="go build github.com/FACorreiaa/go-ollama" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
       <module name="go-ollama" />
       <working_directory value="$PROJECT_DIR$" />
@@ -202,10 +140,24 @@
       </deployment>
       <method v="2" />
     </configuration>
+    <configuration name="docker-compose.yaml.server: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="Docker">
+      <deployment type="docker-compose.yml">
+        <settings>
+          <option name="services">
+            <list>
+              <option value="server" />
+            </list>
+          </option>
+          <option name="sourceFilePath" value="docker-compose.yaml" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Docker.docker-compose.yaml.db: Compose Deployment" />
         <item itemvalue="Docker.docker-compose.yaml: Compose Deployment" />
+        <item itemvalue="Docker.docker-compose.yaml.server: Compose Deployment" />
+        <item itemvalue="Docker.docker-compose.yaml.db: Compose Deployment" />
       </list>
     </recent_temporary>
   </component>
