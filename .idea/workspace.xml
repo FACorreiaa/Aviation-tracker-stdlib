@@ -8,21 +8,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c013bd4f-727c-4da5-8094-985645879420" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.github/workflows/golangci-lint.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.golangci.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tmp/main" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/go-ollama.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/go-ollama.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tmp/build-errors.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/golangci-lint.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Modelfile" beforeDir="false" afterPath="$PROJECT_DIR$/Modelfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db/db.go" beforeDir="false" afterPath="$PROJECT_DIR$/db/db.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/html/layout.html" beforeDir="false" afterPath="$PROJECT_DIR$/controller/html/layout.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/static/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/controller/static/css/main.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/static/favicon.ico" beforeDir="false" afterPath="$PROJECT_DIR$/controller/static/favicon.ico" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/static/js/htmx.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/controller/static/js/htmx.min.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/config/config.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tmp/main" beforeDir="false" afterPath="$PROJECT_DIR$/tmp/main" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,11 +84,11 @@
       <recent name="$PROJECT_DIR$/internal/schema" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/controller/static" />
       <recent name="$PROJECT_DIR$/internal/api/handler/external_api/static/templates" />
       <recent name="$PROJECT_DIR$/internal/api/handler/external_api/static" />
       <recent name="$PROJECT_DIR$/internal/api/handler/external_api" />
       <recent name="$PROJECT_DIR$/internal/api/handler" />
-      <recent name="$PROJECT_DIR$" />
     </key>
   </component>
   <component name="RunManager" selected="Docker.docker-compose.yaml: Compose Deployment">

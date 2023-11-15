@@ -128,7 +128,6 @@ func NewDatabaseConfig() (*DatabaseConfig, error) {
 		RawQuery: query.Encode(),
 	}
 
-	println(connURL.String())
 	return &DatabaseConfig{
 		ConnectionURL: connURL.String(),
 	}, nil

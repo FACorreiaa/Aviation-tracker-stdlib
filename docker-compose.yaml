@@ -62,7 +62,7 @@ services:
       - HTTP_USER=root
       - HTTP_PASSWORD=qwerty
     ports:
-      - "8082:8082"
+      - "8082:8081"
     expose:
       - "8082"
     networks:
@@ -70,20 +70,20 @@ services:
     depends_on:
       - redis
 
-  server:
-    build: .
-    networks:
-      - gollama-assistant
-    depends_on:
-      - postgres
-      - redis
-    environment:
-      LOG_FORMAT: json
-      DB_HOST: postgres
-      REDIS_HOST: redis
-      ADDR: "0.0.0.0:6969"
-    ports:
-      - 6969:6969
+#  server:
+#    build: .
+#    networks:
+#      - gollama-assistant
+#    depends_on:
+#      - postgres
+#      - redis
+#    environment:
+#      LOG_FORMAT: json
+#      DB_HOST: postgres
+#      REDIS_HOST: redis
+#      ADDR: "0.0.0.0:6969"
+#    ports:
+#      - 6969:6969
 
 networks:
   gollama-assistant:
