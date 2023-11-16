@@ -15,6 +15,7 @@ import (
 type Config struct {
 	Log      *LogConfig
 	Database *DatabaseConfig
+	Redis    *RedisConfig
 	Server   *ServerConfig
 }
 
@@ -25,6 +26,12 @@ type LogConfig struct {
 
 type DatabaseConfig struct {
 	ConnectionURL string
+}
+
+type RedisConfig struct {
+	Host     string
+	Password string
+	Db       int
 }
 
 type ServerConfig struct {
@@ -47,10 +54,16 @@ func NewConfig() (*Config, error) {
 		return nil, err
 	}
 
+	redisClient, err := NewRedisConfig()
+	if err != nil {
+		return nil, err
+	}
+
 	return &Config{
 		Log:      NewLogConfig(),
 		Database: database,
 		Server:   server,
+		Redis:    redisClient,
 	}, nil
 }
 
@@ -127,9 +140,25 @@ func NewDatabaseConfig() (*DatabaseConfig, error) {
 		Path:     dbname,
 		RawQuery: query.Encode(),
 	}
-
 	return &DatabaseConfig{
 		ConnectionURL: connURL.String(),
+	}, nil
+}
+
+func NewRedisConfig() (*RedisConfig, error) {
+	host := GetEnv("DB_HOST", "localhost:6380")
+	pass := GetEnv("DB_HOST", "qwerty")
+
+	//rdb := redis.NewClient(&redis.Options{
+	//	Addr:     host,
+	//	Password: pass, // no password set
+	//	DB:       0,    // use default DB
+	//})
+
+	return &RedisConfig{
+		Host:     host,
+		Password: pass,
+		Db:       0,
 	}, nil
 }
 

@@ -5,11 +5,12 @@ import (
 	"crypto/rand"
 	"errors"
 	"fmt"
+	"github.com/jackc/pgx/v5"
+	"github.com/redis/go-redis/v9"
+	"golang.org/x/crypto/bcrypt"
+	"log"
 	"log/slog"
 	"time"
-
-	"github.com/jackc/pgx/v5"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type LoginForm struct {
@@ -59,61 +60,80 @@ func (a *Accounts) Login(ctx context.Context, form LoginForm) (*Token, error) {
 	}
 
 	token := Token(fmt.Sprintf("%x", tokenBytes))
+	log.Printf("Generated token: %s", token)
 
-	if _, err := a.pgpool.Exec(
-		ctx,
-		`
-		insert into user_token (user_id, token, context)
-		values ($1, $2, $3)
-		`,
-		user.ID,
-		token,
-		"auth",
-	); err != nil {
-		slog.Error("Error inserting token", "err", err)
+	//if _, err := a.pgpool.Exec(
+	//	ctx,
+	//	`
+	//	insert into user_token (user_id, token, context)
+	//	values ($1, $2, $3)
+	//	`,
+	//	user.ID,
+	//	token,
+	//	"auth",
+	//); err != nil {
+	//	slog.Error("Error inserting token", "err", err)
+	//	return nil, errors.New("internal server error")
+	//}
+
+	// Store the session token in Redis
+	//key := REDIS_PREFIX + string(token)
+	err = a.redisClient.Set(ctx, string(token), (user.ID).String(), MAX_AGE).Err()
+	if err != nil {
+		log.Println("Error inserting token into Redis:", err)
 		return nil, errors.New("internal server error")
 	}
 
+	log.Println("Token successfully inserted into Redis")
 	return &token, nil
 }
 
 func (h *Accounts) UserFromSessionToken(ctx context.Context, token Token) (*User, error) {
-	rows, _ := h.pgpool.Query(
-		ctx,
-		`
-		select
-			t.token,
-			t.created_at,
-			row(
-				u.user_id,
-				u.username,
-				u.email,
-				u.password_hash,
-				u.bio,
-				u.image,
-				u.created_at,
-				u.updated_at
-			)
-		from "user" u
-		join user_token t using (user_id)
-		where token = $1 and context = 'auth'
-		limit 1
-		`,
-		token,
-	)
-	userWithToken, err := pgx.CollectOneRow(rows, pgx.RowToStructByPos[UserToken])
+	//key := REDIS_PREFIX + string(token)
+	// Retrieve user ID from Redis
+	fmt.Println("Retrieving user ID from Redis for token:", token)
+	userID, err := h.redisClient.Get(ctx, token).Result()
+	fmt.Println("Retrieved user ID from Redis:", userID)
 	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
+		if errors.Is(err, redis.Nil) {
 			return nil, errors.New("auth session expired")
 		}
 
-		slog.Error("Error querying user with token", "err", err)
+		log.Println("Error querying user ID with token from Redis:", err)
 		return nil, errors.New("internal server error")
 	}
 
+	// Retrieve user details from your data store (PostgreSQL in this case)
+	rows, err := h.pgpool.Query(
+		ctx,
+		`
+		select
+			user_id,
+			username,
+			email,
+			password_hash,
+			bio,
+			image,
+			created_at,
+			updated_at
+		from "user" where user_id = $1 limit 1
+		`,
+		userID,
+	)
+	if err != nil {
+		log.Println("Error querying user from PostgreSQL:", err)
+		return nil, errors.New("internal server error")
+	}
+
+	userWithToken, err := pgx.CollectOneRow(rows, pgx.RowToStructByPos[User])
+	if err != nil {
+		return nil, errors.New("internal server error")
+	}
+
+	// Check if the session has expired
 	if userWithToken.CreatedAt == nil || time.Since(*userWithToken.CreatedAt) > MAX_AGE {
 		return nil, errors.New("auth session expired")
 	}
 
-	return userWithToken.User, nil
+	return &userWithToken, nil
 }

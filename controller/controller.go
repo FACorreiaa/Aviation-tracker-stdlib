@@ -11,6 +11,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/redis/go-redis/v9"
 	"log/slog"
 	"net/http"
 )
@@ -26,15 +27,16 @@ type core struct {
 }
 
 type Handlers struct {
-	pgool       *pgxpool.Pool
+	pgpool      *pgxpool.Pool
 	formDecoder *form.Decoder
 	validator   *validator.Validate
 	translator  ut.Translator
 	sessions    *sessions.CookieStore
 	core        *core
+	redisClient *redis.Client
 }
 
-func Router(pool *pgxpool.Pool, sessionSecret []byte) http.Handler {
+func Router(pool *pgxpool.Pool, sessionSecret []byte, redisClient *redis.Client) http.Handler {
 	validate := validator.New()
 	translator, _ := ut.New(en.New(), en.New()).GetTranslator("en")
 	if err := en_translations.RegisterDefaultTranslations(validate, translator); err != nil {
@@ -45,13 +47,14 @@ func Router(pool *pgxpool.Pool, sessionSecret []byte) http.Handler {
 
 	r := mux.NewRouter()
 	h := Handlers{
-		pgool:       pool,
+		pgpool:      pool,
 		formDecoder: formDecoder,
 		validator:   validate,
 		translator:  translator,
 		sessions:    sessions.NewCookieStore(sessionSecret),
+		redisClient: redisClient,
 		core: &core{
-			accounts: account.NewAccounts(pool, validate),
+			accounts: account.NewAccounts(pool, redisClient, validate),
 		},
 	}
 
@@ -64,19 +67,19 @@ func Router(pool *pgxpool.Pool, sessionSecret []byte) http.Handler {
 	})
 
 	// Public routes, authentication is optional
-	optauth := r.NewRoute().Subrouter()
-	optauth.Use(h.authMiddleware)
-	optauth.HandleFunc("/", handler(h.homePage)).Methods(http.MethodGet)
+	optAuth := r.NewRoute().Subrouter()
+	optAuth.Use(h.authMiddleware)
+	optAuth.HandleFunc("/", handler(h.homePage)).Methods(http.MethodGet)
 
 	// Routes that shouldn't be available to authenticated users
-	noauth := r.NewRoute().Subrouter()
-	noauth.Use(h.authMiddleware)
-	noauth.Use(h.redirectIfAuth)
+	noAuth := r.NewRoute().Subrouter()
+	noAuth.Use(h.authMiddleware)
+	noAuth.Use(h.redirectIfAuth)
 
-	noauth.HandleFunc("/login", handler(h.loginPage)).Methods(http.MethodGet)
-	noauth.HandleFunc("/login", handler(h.loginPost)).Methods(http.MethodPost)
-	noauth.HandleFunc("/register", handler(h.registerPage)).Methods(http.MethodGet)
-	noauth.HandleFunc("/register", handler(h.registerPost)).Methods(http.MethodPost)
+	noAuth.HandleFunc("/login", handler(h.loginPage)).Methods(http.MethodGet)
+	noAuth.HandleFunc("/login", handler(h.loginPost)).Methods(http.MethodPost)
+	noAuth.HandleFunc("/register", handler(h.registerPage)).Methods(http.MethodGet)
+	noAuth.HandleFunc("/register", handler(h.registerPost)).Methods(http.MethodPost)
 
 	// Authenticated routes
 	auth := r.NewRoute().Subrouter()

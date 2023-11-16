@@ -3,30 +3,37 @@ package account
 import (
 	"context"
 	"fmt"
-	"time"
-
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/redis/go-redis/v9"
+	"time"
 )
 
-const RAND_SIZE = 32
-const MAX_AGE = time.Hour * 24 * 60
+const (
+	REDIS_PREFIX = "user_session:"
+	RAND_SIZE    = 32
+	MAX_AGE      = time.Hour * 24 * 60
+)
 
 type Token = string
 
 type Accounts struct {
-	pgpool    *pgxpool.Pool
-	validator *validator.Validate
+	pgpool      *pgxpool.Pool
+	redisClient *redis.Client
+	validator   *validator.Validate
 }
 
 func NewAccounts(
 	pgpool *pgxpool.Pool,
+	redisClient *redis.Client,
 	validator *validator.Validate,
+
 ) *Accounts {
 	return &Accounts{
-		pgpool:    pgpool,
-		validator: validator,
+		pgpool:      pgpool,
+		redisClient: redisClient,
+		validator:   validator,
 	}
 }
 
@@ -47,14 +54,23 @@ type UserToken struct {
 	User      *User
 }
 
+// Logout deletes the user token from the Redis store
 func (h *Accounts) Logout(ctx context.Context, token Token) error {
-	if _, err := h.pgpool.Exec(
-		ctx,
-		`
-		delete from user_token where token_id = $1 and context = 'auth'
-		`,
-		token,
-	); err != nil {
+	//userKey := REDIS_PREFIX + string(token)
+
+	// Check if the token exists
+	exists, err := h.redisClient.Exists(ctx, token).Result()
+	if err != nil {
+		return fmt.Errorf("error checking token existence: %w", err)
+	}
+
+	if exists == 0 {
+		// Token not found, consider it already logged out
+		return nil
+	}
+
+	// Delete the token
+	if err := h.redisClient.Del(ctx, token).Err(); err != nil {
 		return fmt.Errorf("error deleting token: %w", err)
 	}
 

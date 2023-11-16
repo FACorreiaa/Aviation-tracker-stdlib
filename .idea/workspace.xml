@@ -8,18 +8,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c013bd4f-727c-4da5-8094-985645879420" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/tmp/build-errors.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/workflows/golangci-lint.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.golangci.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.golangci.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controller/html/layout.html" beforeDir="false" afterPath="$PROJECT_DIR$/controller/html/layout.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controller/static/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/controller/static/css/main.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controller/static/favicon.ico" beforeDir="false" afterPath="$PROJECT_DIR$/controller/static/favicon.ico" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controller/static/js/htmx.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/controller/static/js/htmx.min.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/auth_middleware.go" beforeDir="false" afterPath="$PROJECT_DIR$/controller/auth_middleware.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/controller/controller.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/account/account.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/account/account.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/account/login.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/account/login.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/account/register.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/account/register.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/db.go" beforeDir="false" afterPath="$PROJECT_DIR$/db/db.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tmp/build-errors.log" beforeDir="false" afterPath="$PROJECT_DIR$/tmp/build-errors.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tmp/main" beforeDir="false" afterPath="$PROJECT_DIR$/tmp/main" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -91,7 +92,7 @@
       <recent name="$PROJECT_DIR$/internal/api/handler" />
     </key>
   </component>
-  <component name="RunManager" selected="Docker.docker-compose.yaml: Compose Deployment">
+  <component name="RunManager" selected="Go Build.go build github.com/FACorreiaa/go-ollama">
     <configuration name="go build github.com/FACorreiaa/go-ollama" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
       <module name="go-ollama" />
       <working_directory value="$PROJECT_DIR$" />
@@ -176,6 +177,16 @@
           <url>file://$PROJECT_DIR$/internal/api/handler/handler.go</url>
           <line>62</line>
           <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/core/account/login.go</url>
+          <line>21</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/core/account/register.go</url>
+          <line>172</line>
+          <option name="timeStamp" value="6" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

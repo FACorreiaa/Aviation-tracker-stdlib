@@ -6,6 +6,7 @@ import (
 	"github.com/FACorreiaa/go-ollama/config"
 	"github.com/FACorreiaa/go-ollama/controller"
 	"github.com/FACorreiaa/go-ollama/db"
+	"github.com/redis/go-redis/v9"
 	"log/slog"
 	"net/http"
 	"os"
@@ -40,17 +41,36 @@ func main() {
 
 	db.WaitForDB(pool)
 
+	redisClient, err := db.InitRedis(cfg.Redis.Host, cfg.Redis.Password, cfg.Redis.Db)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	defer func(redisClient *redis.Client) {
+		err := redisClient.Close()
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+	}(redisClient)
+	db.WaitForRedis(redisClient)
+
 	if err = db.Migrate(pool); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+
+	//if err = db.MigrateRedis(redisClient); err != nil {
+	//	fmt.Println(err)
+	//	os.Exit(1)
+	//}
 
 	srv := &http.Server{
 		Addr:         cfg.Server.Addr,
 		WriteTimeout: cfg.Server.WriteTimeout,
 		ReadTimeout:  cfg.Server.ReadTimeout,
 		IdleTimeout:  cfg.Server.IdleTimeout,
-		Handler:      controller.Router(pool, []byte(cfg.Server.SessionKey)),
+		Handler:      controller.Router(pool, []byte(cfg.Server.SessionKey), redisClient),
 	}
 
 	go func() {
