@@ -17,13 +17,13 @@ import (
 //go:embed migrations/*.sql
 var migrationFS embed.FS
 
-// Init
+// Init Init
 func Init(connectionURL string) (*pgxpool.Pool, error) {
 	cfg, err := pgxpool.ParseConfig(connectionURL)
 	if err != nil {
 		return nil, err
 	}
-
+	println(connectionURL)
 	cfg.AfterConnect = func(_ context.Context, conn *pgx.Conn) error {
 		uuid.Register(conn.TypeMap())
 		return nil
@@ -109,92 +109,7 @@ func Migrate(conn *pgxpool.Pool) error {
 	return nil
 }
 
-//// MigrateRedis performs migrations for Redis
-//func MigrateRedis(redisClient *redis.Client) error {
-//	ctx := context.Background()
-//
-//	// Create a set to store applied migrations
-//	appliedMigrationsKey := "applied_migrations"
-//
-//	// Check if the set exists, if not, create it
-//	exists, err := redisClient.Exists(ctx, appliedMigrationsKey).Result()
-//	if err != nil {
-//		return err
-//	}
-//
-//	if exists == 0 {
-//		if err := redisClient.SAdd(ctx, appliedMigrationsKey, "initial_migration").Err(); err != nil {
-//			return err
-//		}
-//	}
-//
-//	// Get the list of applied migrations
-//	appliedMigrations, err := redisClient.SMembers(ctx, appliedMigrationsKey).Result()
-//	if err != nil {
-//		return err
-//	}
-//
-//	// Read migration files
-//	migrationFiles, err := ioutil.ReadDir("migrations")
-//	if err != nil {
-//		return err
-//	}
-//
-//	// Apply pending migrations
-//	for _, migrationFile := range migrationFiles {
-//		migrationName := migrationFile.Name()
-//
-//		// Check if the migration has already been applied
-//		if contains(appliedMigrations, migrationName) {
-//			log.Printf("Migration %s already applied", migrationName)
-//			continue
-//		}
-//
-//		// Read the migration file
-//		contents, err := ioutil.ReadFile("migrations/" + migrationName)
-//		if err != nil {
-//			return err
-//		}
-//
-//		// Apply the migration (in this example, we're just hashing the content for simplicity)
-//		//contentHash := fmt.Sprintf("%x", md5.Sum(contents))
-//
-//		// Apply the migration logic, e.g., set a key-value pair in Redis
-//		err = applyMigrationLogic(ctx, redisClient, contents)
-//		if err != nil {
-//			return err
-//		}
-//
-//		// Add the migration to the set of applied migrations
-//		if err := redisClient.SAdd(ctx, appliedMigrationsKey, migrationName).Err(); err != nil {
-//			return err
-//		}
-//
-//		log.Printf("Migration %s applied", migrationName)
-//	}
-//
-//	log.Println("Migrations finished")
-//	return nil
-//}
-//
-//func applyMigrationLogic(ctx context.Context, client *redis.Client, contents []byte) error {
-//	// Your migration logic here, e.g., set a key-value pair in Redis
-//	key := "example_key"
-//	value := string(contents)
-//	return client.Set(ctx, key, value, 0).Err()
-//}
-//
-//// Helper function to check if a string is in a slice of strings
-//func contains(slice []string, str string) bool {
-//	for _, s := range slice {
-//		if s == str {
-//			return true
-//		}
-//	}
-//	return false
-//}
-
-// Small hack to wait for database to start inside docker
+// WaitForDB Small hack to wait for database to start inside docker
 func WaitForDB(pgpool *pgxpool.Pool) {
 	ctx := context.Background()
 

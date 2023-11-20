@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/FACorreiaa/go-ollama/api"
 	"github.com/FACorreiaa/go-ollama/config"
 	"github.com/FACorreiaa/go-ollama/controller"
 	"github.com/FACorreiaa/go-ollama/db"
@@ -56,6 +57,41 @@ func main() {
 	db.WaitForRedis(redisClient)
 
 	if err = db.Migrate(pool); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	if err = api.MigrateAirlineAPIData(pool); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	if err = api.MigrateAircraftAPIData(pool); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	if err = api.MigrateTaxAPIData(pool); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	if err = api.MigrateAirplaneAPIData(pool); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	if err = api.MigrateAirportAPIData(pool); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	if err = api.MigrateCountryAPIData(pool); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	if err = api.MigrateCityAPIData(pool); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}

@@ -2,7 +2,6 @@ package controller
 
 import (
 	"context"
-	"fmt"
 	"github.com/FACorreiaa/go-ollama/core/account"
 	"net/http"
 )
@@ -18,17 +17,11 @@ const (
 func (h *Handlers) authMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		session, _ := h.sessions.Get(r, "auth")
-		fmt.Println("session", session)
 
 		token := session.Values["token"]
-		fmt.Println("token", token)
 
 		if token, ok := token.(string); ok {
 			user, err := h.core.accounts.UserFromSessionToken(r.Context(), account.Token(token))
-			fmt.Println("user", user)
-			fmt.Println("token", token)
-			fmt.Println("account.Token(token)", account.Token(token))
-			fmt.Println("string(token)", string(token))
 
 			if err == nil {
 				ctx := context.WithValue(r.Context(), ctxKeyAuthUser, user)

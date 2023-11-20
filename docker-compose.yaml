@@ -16,7 +16,7 @@ services:
     volumes:
       - ./.data/docker-postgres:/var/lib/postgresql/data
     networks:
-      - gollama-assistant
+      - aviation-client
   pgweb:
     container_name: pgweb  # optional
     restart: always  # optional
@@ -50,7 +50,7 @@ services:
       - ./.data/docker-redis:/var/lib/redis/data
 
     networks:
-      - gollama-assistant
+      - aviation-client
 
   redis-commander:
     container_name: redis-commander
@@ -66,7 +66,7 @@ services:
     expose:
       - "8082"
     networks:
-      - gollama-assistant
+      - aviation-client
     depends_on:
       - redis
 
@@ -86,4 +86,4 @@ services:
 #      - 6969:6969
 
 networks:
-  gollama-assistant:
+  aviation-client:
