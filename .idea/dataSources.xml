@@ -8,11 +8,11 @@
       <jdbc-url>jdbc:redis://localhost:6380/0</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="Ollama-dev@localhost" uuid="8f5290d1-5243-4a4a-aa1f-12ce0859b53b">
+    <data-source source="LOCAL" name="aviation-tracker-dev@localhost" uuid="812ba735-0c5c-49cc-b6c2-842e04ab8c9e">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:postgresql://localhost:5435/Ollama-dev?sslmode=disable&amp;timezone=utc</jdbc-url>
+      <jdbc-url>jdbc:postgresql://localhost:5435/aviation-tracker-dev?sslmode=disable&amp;timezone=utc</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>

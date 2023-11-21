@@ -1,6 +1,7 @@
 package api
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -14,8 +15,18 @@ import (
 	"net/url"
 	"os"
 	"strings"
-	"sync"
+	"time"
 )
+
+func handleError(err error, message string) {
+	if err != nil {
+		log.Printf("%s: %v", message, err)
+	}
+}
+
+func formatTime(t time.Time) string {
+	return t.Format("2006-01-02 15:04:05-07:00")
+}
 
 /*Airline Migration function */
 
@@ -26,14 +37,14 @@ func MigrateAirlineAPIData(conn *pgxpool.Pool) error {
 
 	var count int
 	if err := conn.QueryRow(ctx, "SELECT COUNT(*) FROM airline").Scan(&count); err != nil {
-		fmt.Println("Error querying the table", err)
+		handleError(err, "Error querying the table")
 		return err
 	}
 
 	if count == 0 {
 		// No data in the airline table, fetch from the external API
 		if err := fetchDataAndInsertAirlineData(conn); err != nil {
-			fmt.Println("Error inserting data", err)
+			handleError(err, "Error inserting data")
 			return err
 		}
 	}
@@ -42,63 +53,50 @@ func MigrateAirlineAPIData(conn *pgxpool.Pool) error {
 }
 
 func fetchDataAndInsertAirlineData(conn *pgxpool.Pool) error {
-	ch := make(chan string)
-	wg := sync.WaitGroup{}
-	wg.Add(1)
-	var response structs.AirlineApiData
-
-	go fetchAviationStackData("airlines", ch, &wg)
-
-	go func() {
-		wg.Wait()
-		close(ch)
-	}()
-
-	for data := range ch {
-		if err := json.Unmarshal([]byte(data), &response); err != nil {
-			log.Printf("error unmarshaling API response: %v", err)
-			return err
-		}
-
-		responseData := response.Data
-
-		// Insert data from the JSON
-		if _, err := conn.CopyFrom(
-			context.Background(),
-			pgx.Identifier{"airline"},
-			[]string{"fleet_average_age", "airline_id", "callsign", "hub_code", "iata_code", "icao_code", "country_iso2",
-				"date_founded", "iata_prefix_accounting", "airline_name", "country_name", "fleet_size", "status", "type",
-				"created_at",
-			},
-			pgx.CopyFromSlice(len(responseData), func(i int) ([]interface{}, error) {
-				createdAt := responseData[i].CreatedAt.Time.Format("2006-01-02 15:04:05-07:00")
-
-				return []interface{}{
-					responseData[i].FleetAverageAge,
-					responseData[i].AirlineId,
-					responseData[i].Callsign,
-					responseData[i].HubCode,
-					responseData[i].IataCode,
-					responseData[i].IcaoCode,
-					responseData[i].CountryIso2,
-					responseData[i].DateFounded,
-					responseData[i].IataPrefixAccounting,
-					responseData[i].AirlineName,
-					responseData[i].CountryName,
-					responseData[i].FleetSize,
-					responseData[i].Status,
-					responseData[i].Type,
-					createdAt,
-				}, nil
-			}),
-		); err != nil {
-			log.Printf("error inserting data into airline table: %v", err)
-			return err
-		}
-
-		slog.Info("Data inserted into the airline table")
+	data, err := fetchAviationStackData("airlines")
+	if err != nil {
+		handleError(err, "error fetching data")
+		return err
+	}
+	res := new(structs.AirlineApiData)
+	if err := json.NewDecoder(bytes.NewReader(data)).Decode(&res); err != nil {
+		handleError(err, "error unmarshaling API response")
+		return err
 	}
 
+	// Insert data from the JSON
+	if _, err := conn.CopyFrom(
+		context.Background(),
+		pgx.Identifier{"airline"},
+		[]string{"fleet_average_age", "airline_id", "callsign", "hub_code", "iata_code", "icao_code", "country_iso2",
+			"date_founded", "iata_prefix_accounting", "airline_name", "country_name", "fleet_size", "status", "type",
+			"created_at",
+		},
+		pgx.CopyFromSlice(len(res.Data), func(i int) ([]interface{}, error) {
+			return []interface{}{
+				res.Data[i].FleetAverageAge,
+				res.Data[i].AirlineId,
+				res.Data[i].Callsign,
+				res.Data[i].HubCode,
+				res.Data[i].IataCode,
+				res.Data[i].IcaoCode,
+				res.Data[i].CountryIso2,
+				res.Data[i].DateFounded,
+				res.Data[i].IataPrefixAccounting,
+				res.Data[i].AirlineName,
+				res.Data[i].CountryName,
+				res.Data[i].FleetSize,
+				res.Data[i].Status,
+				res.Data[i].Type,
+				formatTime(time.Now()),
+			}, nil
+		}),
+	); err != nil {
+		handleError(err, "error inserting data into airline table")
+		return err
+	}
+
+	slog.Info("Data inserted into the airline table")
 	return nil
 }
 
@@ -111,14 +109,14 @@ func MigrateAircraftAPIData(conn *pgxpool.Pool) error {
 
 	var count int
 	if err := conn.QueryRow(ctx, "SELECT COUNT(*) FROM aircraft").Scan(&count); err != nil {
-		fmt.Println("Error querying the table", err)
+		handleError(err, "Error querying the table")
 		return err
 	}
 
 	if count == 0 {
 		// No data in the airline table, fetch from the external API
 		if err := fetchDataAndInsertAircraftData(conn); err != nil {
-			fmt.Println("Error inserting data", err)
+			handleError(err, "Error inserting data")
 			return err
 		}
 	}
@@ -127,49 +125,38 @@ func MigrateAircraftAPIData(conn *pgxpool.Pool) error {
 }
 
 func fetchDataAndInsertAircraftData(conn *pgxpool.Pool) error {
-	ch := make(chan string)
-	wg := sync.WaitGroup{}
-	wg.Add(1)
-	var response structs.AircraftApiData
-
-	go fetchAviationStackData("aircraft_types", ch, &wg)
-
-	go func() {
-		wg.Wait()
-		close(ch)
-	}()
-
-	for data := range ch {
-		if err := json.Unmarshal([]byte(data), &response); err != nil {
-			log.Printf("error unmarshaling API response: %v", err)
-			return err
-		}
-
-		responseData := response.Data
-
-		//Insert data from the json
-		if _, err := conn.CopyFrom(
-
-			context.Background(),
-			pgx.Identifier{"aircraft"},
-			[]string{"iata_code", "aircraft_name", "plane_type_id", "created_at"},
-			pgx.CopyFromSlice(len(responseData), func(i int) ([]interface{}, error) {
-				createdAt := responseData[i].CreatedAt.Time.Format("2006-01-02 15:04:05-07:00")
-
-				return []interface{}{
-					responseData[i].IataCode,
-					responseData[i].AircraftName,
-					responseData[i].PlaneTypeId,
-					createdAt,
-				}, nil
-			}),
-		); err != nil {
-			log.Printf("error inserting data into aircraft table: %v", err)
-			return err
-		}
-
-		slog.Info("Data inserted into the aircraft table")
+	res := new(structs.AircraftApiData)
+	data, err := fetchAviationStackData("aircraft_types")
+	if err != nil {
+		handleError(err, "error fetching data")
+		return err
 	}
+
+	if err := json.NewDecoder(bytes.NewReader(data)).Decode(&res); err != nil {
+		handleError(err, "error unmarshaling API response")
+		return err
+	}
+
+	//Insert data from the json
+	if _, err := conn.CopyFrom(
+
+		context.Background(),
+		pgx.Identifier{"aircraft"},
+		[]string{"iata_code", "aircraft_name", "plane_type_id", "created_at"},
+		pgx.CopyFromSlice(len(res.Data), func(i int) ([]interface{}, error) {
+			return []interface{}{
+				res.Data[i].IataCode,
+				res.Data[i].AircraftName,
+				res.Data[i].PlaneTypeId,
+				formatTime(time.Now()),
+			}, nil
+		}),
+	); err != nil {
+		handleError(err, "error inserting data into aircraft table")
+		return err
+	}
+
+	slog.Info("Data inserted into the aircraft table")
 
 	return nil
 }
@@ -183,14 +170,14 @@ func MigrateTaxAPIData(conn *pgxpool.Pool) error {
 
 	var count int
 	if err := conn.QueryRow(ctx, "SELECT COUNT(*) FROM tax").Scan(&count); err != nil {
-		fmt.Println("Error querying the table", err)
+		handleError(err, "Error querying the table")
 		return err
 	}
 
 	if count == 0 {
 		// No data in the airline table, fetch from the external API
 		if err := fetchDataAndInsertTaxData(conn); err != nil {
-			fmt.Println("Error inserting data", err)
+			handleError(err, "Error inserting data")
 			return err
 		}
 	}
@@ -199,50 +186,35 @@ func MigrateTaxAPIData(conn *pgxpool.Pool) error {
 }
 
 func fetchDataAndInsertTaxData(conn *pgxpool.Pool) error {
-	ch := make(chan string)
-	wg := sync.WaitGroup{}
-	wg.Add(1)
-	var response structs.TaxApiData
-
-	go fetchAviationStackData("taxes", ch, &wg)
-
-	go func() {
-		wg.Wait()
-		close(ch)
-	}()
-
-	for data := range ch {
-		if err := json.Unmarshal([]byte(data), &response); err != nil {
-			log.Printf("error unmarshaling API response: %v", err)
-			return err
-		}
-
-		responseData := response.Data
-
-		//Insert data from the json
-		if _, err := conn.CopyFrom(
-
-			context.Background(),
-			pgx.Identifier{"tax"},
-			[]string{"tax_id", "tax_name", "iata_code", "created_at"},
-			pgx.CopyFromSlice(len(responseData), func(i int) ([]interface{}, error) {
-				createdAt := responseData[i].CreatedAt.Time.Format("2006-01-02 15:04:05-07:00")
-
-				return []interface{}{
-					responseData[i].TaxId,
-					responseData[i].TaxName,
-					responseData[i].IataCode,
-					createdAt,
-				}, nil
-			}),
-		); err != nil {
-			log.Printf("error inserting data into aircraft table: %v", err)
-			return err
-		}
-
-		slog.Info("Data inserted into the aircraft table")
+	data, err := fetchAviationStackData("taxes")
+	if err != nil {
+		handleError(err, "error fetching data")
+		return err
+	}
+	res := new(structs.TaxApiData)
+	if err := json.NewDecoder(bytes.NewReader(data)).Decode(&res); err != nil {
+		handleError(err, "error unmarshaling API response")
+		return err
 	}
 
+	//Insert data from the json
+	if _, err := conn.CopyFrom(
+
+		context.Background(),
+		pgx.Identifier{"tax"},
+		[]string{"tax_id", "tax_name", "iata_code", "created_at"},
+		pgx.CopyFromSlice(len(res.Data), func(i int) ([]interface{}, error) {
+			return []interface{}{
+				res.Data[i].TaxId, res.Data[i].TaxName, res.Data[i].IataCode,
+				formatTime(time.Now()),
+			}, nil
+		}),
+	); err != nil {
+		handleError(err, "error inserting data into tax table")
+		return err
+	}
+
+	slog.Info("Data inserted into the aircraft table")
 	return nil
 }
 
@@ -255,14 +227,14 @@ func MigrateAirplaneAPIData(conn *pgxpool.Pool) error {
 
 	var count int
 	if err := conn.QueryRow(ctx, "SELECT COUNT(*) FROM airplane").Scan(&count); err != nil {
-		fmt.Println("Error querying the table", err)
+		handleError(err, "Error querying the table")
 		return err
 	}
 
 	if count == 0 {
 		// No data in the airline table, fetch from the external API
 		if err := fetchDataAndInsertAirplaneData(conn); err != nil {
-			fmt.Println("Error inserting data", err)
+			handleError(err, "Error inserting data")
 			return err
 		}
 	}
@@ -271,79 +243,64 @@ func MigrateAirplaneAPIData(conn *pgxpool.Pool) error {
 }
 
 func fetchDataAndInsertAirplaneData(conn *pgxpool.Pool) error {
-	ch := make(chan string)
-	wg := sync.WaitGroup{}
-	wg.Add(1)
-	var response structs.AirplaneApiData
-
-	go fetchAviationStackData("airplanes", ch, &wg)
-
-	go func() {
-		wg.Wait()
-		close(ch)
-	}()
-
-	for data := range ch {
-		if err := json.Unmarshal([]byte(data), &response); err != nil {
-			log.Printf("error unmarshaling API response: %v", err)
-			return err
-		}
-		responseData := response.Data
-
-		//Insert data from the json
-		if _, err := conn.CopyFrom(
-
-			context.Background(),
-			pgx.Identifier{"airplane"},
-			[]string{"iata_type", "airplane_id", "airline_iata_code", "iata_code_long", "iata_code_short",
-				"airline_icao_code", "construction_number", "delivery_date", "engines_count", "engines_type",
-				"first_flight_date", "icao_code_hex", "line_number", "model_code", "registration_number",
-				"test_registration_number", "plane_age", "plane_class", "model_name", "plane_owner", "plane_series",
-				"plane_status", "production_line", "registration_date", "rollout_date", "created_at",
-			},
-			pgx.CopyFromSlice(len(responseData), func(i int) ([]interface{}, error) {
-				createdAt := responseData[i].CreatedAt.Time.Format("2006-01-02 15:04:05-07")
-				deliveryDate := responseData[i].DeliveryDate.Time
-				firstFlightDate := responseData[i].FirstFlightDate.Time
-				registrationDate := responseData[i].RegistrationDate.Time
-				rolloutDate := responseData[i].RolloutDate.Time
-
-				return []interface{}{
-					responseData[i].IataType,
-					responseData[i].AirplaneId,
-					responseData[i].AirlineIataCode,
-					responseData[i].IataCodeLong,
-					responseData[i].IataCodeShort,
-					responseData[i].AirlineIcaoCode,
-					responseData[i].ConstructionNumber,
-					deliveryDate,
-					responseData[i].EnginesCount,
-					responseData[i].EnginesType,
-					firstFlightDate,
-					responseData[i].IcaoCodeHex,
-					responseData[i].LineNumber,
-					responseData[i].ModelCode,
-					responseData[i].RegistrationNumber,
-					responseData[i].TestRegistrationNumber,
-					responseData[i].PlaneAge,
-					responseData[i].PlaneClass,
-					responseData[i].ModelName,
-					responseData[i].PlaneOwner,
-					responseData[i].PlaneSeries,
-					responseData[i].PlaneStatus,
-					responseData[i].ProductionLine,
-					registrationDate,
-					rolloutDate,
-					createdAt,
-				}, nil
-			}),
-		); err != nil {
-			log.Printf("error inserting data into airplane table: %v", err)
-			return err
-		}
-
-		slog.Info("Data inserted into the airplane table")
+	data, err := fetchAviationStackData("airplanes")
+	if err != nil {
+		handleError(err, "error fetching data")
+		return err
 	}
+	res := new(structs.AirplaneApiData)
+	if err := json.NewDecoder(bytes.NewReader(data)).Decode(&res); err != nil {
+		handleError(err, "error unmarshaling API response")
+		return err
+	}
+
+	//Insert data from the json
+	if _, err := conn.CopyFrom(
+
+		context.Background(),
+		pgx.Identifier{"airplane"},
+		[]string{"iata_type", "airplane_id", "airline_iata_code", "iata_code_long", "iata_code_short",
+			"airline_icao_code", "construction_number", "delivery_date", "engines_count", "engines_type",
+			"first_flight_date", "icao_code_hex", "line_number", "model_code", "registration_number",
+			"test_registration_number", "plane_age", "plane_class", "model_name", "plane_owner", "plane_series",
+			"plane_status", "production_line", "registration_date", "rollout_date", "created_at",
+		},
+		pgx.CopyFromSlice(len(res.Data), func(i int) ([]interface{}, error) {
+			return []interface{}{
+				res.Data[i].IataType,
+				res.Data[i].AirplaneId,
+				res.Data[i].AirlineIataCode,
+				res.Data[i].IataCodeLong,
+				res.Data[i].IataCodeShort,
+				res.Data[i].AirlineIcaoCode,
+				res.Data[i].ConstructionNumber,
+				res.Data[i].DeliveryDate.Time,
+				res.Data[i].EnginesCount,
+				res.Data[i].EnginesType,
+				res.Data[i].FirstFlightDate.Time,
+				res.Data[i].IcaoCodeHex,
+				res.Data[i].LineNumber,
+				res.Data[i].ModelCode,
+				res.Data[i].RegistrationNumber,
+				res.Data[i].TestRegistrationNumber,
+				res.Data[i].PlaneAge,
+				res.Data[i].PlaneClass,
+				res.Data[i].ModelName,
+				res.Data[i].PlaneOwner,
+				res.Data[i].PlaneSeries,
+				res.Data[i].PlaneStatus,
+				res.Data[i].ProductionLine,
+				res.Data[i].RegistrationDate.Time,
+				res.Data[i].RolloutDate.Time,
+				formatTime(time.Now()),
+			}, nil
+		}),
+	); err != nil {
+		handleError(err, "error inserting data into airplane table")
+		return err
+	}
+
+	slog.Info("Data inserted into the airplane table")
 
 	return nil
 }
@@ -357,14 +314,14 @@ func MigrateAirportAPIData(conn *pgxpool.Pool) error {
 
 	var count int
 	if err := conn.QueryRow(ctx, "SELECT COUNT(*) FROM airport").Scan(&count); err != nil {
-		fmt.Println("Error querying the table", err)
+		handleError(err, "Error querying the table")
 		return err
 	}
 
 	if count == 0 {
 		// No data in the airport table, fetch from the external API
 		if err := fetchDataAndInsertAirportData(conn); err != nil {
-			fmt.Println("Error inserting data", err)
+			handleError(err, "Error inserting data")
 			return err
 		}
 	}
@@ -373,63 +330,41 @@ func MigrateAirportAPIData(conn *pgxpool.Pool) error {
 }
 
 func fetchDataAndInsertAirportData(conn *pgxpool.Pool) error {
-	ch := make(chan string)
-	wg := sync.WaitGroup{}
-	wg.Add(1)
-	var response structs.AirportApiData
-
-	go fetchAviationStackData("airports", ch, &wg)
-
-	go func() {
-		wg.Wait()
-		close(ch)
-	}()
-
-	for data := range ch {
-		if err := json.Unmarshal([]byte(data), &response); err != nil {
-			log.Printf("error unmarshaling API response: %v", err)
-			return err
-		}
-
-		responseData := response.Data
-
-		//Insert data from the json
-		if _, err := conn.CopyFrom(
-
-			context.Background(),
-			pgx.Identifier{"airport"},
-			[]string{"gmt", "airport_id", "iata_code", "city_iata_code", "icao_code",
-				"country_iso2", "geoname_id", "latitude", "longitude", "airport_name",
-				"country_name", "phone_number", "timezone", "created_at",
-			},
-			pgx.CopyFromSlice(len(responseData), func(i int) ([]interface{}, error) {
-				createdAt := responseData[i].CreatedAt.Time.Format("2006-01-02 15:04:05-07")
-
-				return []interface{}{
-					responseData[i].GMT,
-					responseData[i].AirportId,
-					responseData[i].IataCode,
-					responseData[i].CityIataCode,
-					responseData[i].IcaoCode,
-					responseData[i].CountryIso2,
-					responseData[i].GeonameId,
-					responseData[i].Latitude,
-					responseData[i].Longitude,
-					responseData[i].AirportName,
-					responseData[i].CountryName,
-					responseData[i].PhoneNumber,
-					responseData[i].Timezone,
-					createdAt,
-				}, nil
-			}),
-		); err != nil {
-			log.Printf("error inserting data into airport table: %v", err)
-			return err
-		}
-
-		slog.Info("Data inserted into the airport table")
+	res := new(structs.AirportApiData)
+	data, err := fetchAviationStackData("airports")
+	if err != nil {
+		handleError(err, "error fetching data")
+		return err
+	}
+	if err := json.NewDecoder(bytes.NewReader(data)).Decode(&res); err != nil {
+		handleError(err, "error unmarshaling API response")
+		return err
 	}
 
+	//Insert data from the json
+	if _, err := conn.CopyFrom(
+
+		context.Background(),
+		pgx.Identifier{"airport"},
+		[]string{"gmt", "airport_id", "iata_code", "city_iata_code", "icao_code",
+			"country_iso2", "geoname_id", "latitude", "longitude", "airport_name",
+			"country_name", "phone_number", "timezone", "created_at",
+		},
+		pgx.CopyFromSlice(len(res.Data), func(i int) ([]interface{}, error) {
+			return []interface{}{
+				res.Data[i].GMT, res.Data[i].AirportId, res.Data[i].IataCode,
+				res.Data[i].CityIataCode, res.Data[i].IcaoCode, res.Data[i].CountryIso2,
+				res.Data[i].GeonameId, res.Data[i].Latitude, res.Data[i].Longitude,
+				res.Data[i].AirportName, res.Data[i].CountryName, res.Data[i].PhoneNumber,
+				res.Data[i].Timezone, formatTime(time.Now()),
+			}, nil
+		}),
+	); err != nil {
+		handleError(err, "error inserting data into airports table")
+		return err
+	}
+
+	slog.Info("Data inserted into the airport table")
 	return nil
 }
 
@@ -442,14 +377,14 @@ func MigrateCountryAPIData(conn *pgxpool.Pool) error {
 
 	var count int
 	if err := conn.QueryRow(ctx, "SELECT COUNT(*) FROM country").Scan(&count); err != nil {
-		fmt.Println("Error querying the table", err)
+		handleError(err, "Error querying the table")
 		return err
 	}
 
 	if count == 0 {
 		// No data in the country table, fetch from the external API
 		if err := fetchDataAndInsertCountryData(conn); err != nil {
-			fmt.Println("Error inserting data", err)
+			handleError(err, "Error inserting data")
 			return err
 		}
 	}
@@ -458,60 +393,48 @@ func MigrateCountryAPIData(conn *pgxpool.Pool) error {
 }
 
 func fetchDataAndInsertCountryData(conn *pgxpool.Pool) error {
-	ch := make(chan string)
-	wg := sync.WaitGroup{}
-	wg.Add(1)
-	var response structs.CountryApiData
-
-	go fetchAviationStackData("countries", ch, &wg)
-
-	go func() {
-		wg.Wait()
-		close(ch)
-	}()
-
-	for data := range ch {
-		if err := json.Unmarshal([]byte(data), &response); err != nil {
-			log.Printf("error unmarshaling API response: %v", err)
-			return err
-		}
-
-		responseData := response.Data
-
-		//Insert data from the json
-		if _, err := conn.CopyFrom(
-
-			context.Background(),
-			pgx.Identifier{"country"},
-			[]string{"country_name", "country_iso2", "country_iso3", "country_iso_numeric", "population",
-				"capital", "continent", "currency_name", "currency_code", "fips_code",
-				"phone_prefix", "created_at",
-			},
-			pgx.CopyFromSlice(len(responseData), func(i int) ([]interface{}, error) {
-				createdAt := responseData[i].CreatedAt.Time.Format("2006-01-02 15:04:05-07")
-
-				return []interface{}{
-					responseData[i].CountryName,
-					responseData[i].CountryIso2,
-					responseData[i].CountryIso3,
-					responseData[i].CountryIsoNumeric,
-					responseData[i].Population,
-					responseData[i].Capital,
-					responseData[i].Continent,
-					responseData[i].CurrencyName,
-					responseData[i].CurrencyCode,
-					responseData[i].FipsCode,
-					responseData[i].PhonePrefix,
-					createdAt,
-				}, nil
-			}),
-		); err != nil {
-			log.Printf("error inserting data into country table: %v", err)
-			return err
-		}
-
-		slog.Info("Data inserted into the country table")
+	res := new(structs.CountryApiData)
+	data, err := fetchAviationStackData("countries")
+	if err != nil {
+		handleError(err, "error fetching data")
+		return err
 	}
+	if err := json.NewDecoder(bytes.NewReader(data)).Decode(&res); err != nil {
+		handleError(err, "error unmarshaling API response")
+		return err
+	}
+
+	//Insert data from the json
+	if _, err := conn.CopyFrom(
+
+		context.Background(),
+		pgx.Identifier{"country"},
+		[]string{"country_name", "country_iso2", "country_iso3", "country_iso_numeric", "population",
+			"capital", "continent", "currency_name", "currency_code", "fips_code",
+			"phone_prefix", "created_at",
+		},
+		pgx.CopyFromSlice(len(res.Data), func(i int) ([]interface{}, error) {
+			return []interface{}{
+				res.Data[i].CountryName,
+				res.Data[i].CountryIso2,
+				res.Data[i].CountryIso3,
+				res.Data[i].CountryIsoNumeric,
+				res.Data[i].Population,
+				res.Data[i].Capital,
+				res.Data[i].Continent,
+				res.Data[i].CurrencyName,
+				res.Data[i].CurrencyCode,
+				res.Data[i].FipsCode,
+				res.Data[i].PhonePrefix,
+				formatTime(time.Now()),
+			}, nil
+		}),
+	); err != nil {
+		handleError(err, "error inserting data into country table")
+		return err
+	}
+
+	slog.Info("Data inserted into the country table")
 
 	return nil
 }
@@ -525,14 +448,14 @@ func MigrateCityAPIData(conn *pgxpool.Pool) error {
 
 	var count int
 	if err := conn.QueryRow(ctx, "SELECT COUNT(*) FROM city").Scan(&count); err != nil {
-		fmt.Println("Error querying the table", err)
+		handleError(err, "Error querying the table")
 		return err
 	}
 
 	if count == 0 {
 		// No data in the airport table, fetch from the external API
 		if err := fetchDataAndInsertCityData(conn); err != nil {
-			fmt.Println("Error inserting data", err)
+			handleError(err, "Error inserting data")
 			return err
 		}
 	}
@@ -541,57 +464,47 @@ func MigrateCityAPIData(conn *pgxpool.Pool) error {
 }
 
 func fetchDataAndInsertCityData(conn *pgxpool.Pool) error {
-	ch := make(chan string)
-	wg := sync.WaitGroup{}
-	wg.Add(1)
-	var response structs.CityApiData
-
-	go fetchAviationStackData("cities", ch, &wg)
-
-	go func() {
-		wg.Wait()
-		close(ch)
-	}()
-
-	for data := range ch {
-		if err := json.Unmarshal([]byte(data), &response); err != nil {
-			log.Printf("error unmarshaling API response: %v", err)
-			return err
-		}
-
-		responseData := response.Data
-
-		//Insert data from the json
-		if _, err := conn.CopyFrom(
-
-			context.Background(),
-			pgx.Identifier{"city"},
-			[]string{"gmt", "city_id", "iata_code", "country_iso2", "geoname_id",
-				"latitude", "longitude", "city_name", "timezone", "created_at",
-			},
-			pgx.CopyFromSlice(len(responseData), func(i int) ([]interface{}, error) {
-				createdAt := responseData[i].CreatedAt.Time.Format("2006-01-02 15:04:05-07")
-
-				return []interface{}{
-					responseData[i].GMT,
-					responseData[i].CityId,
-					responseData[i].IataCode,
-					responseData[i].CountryIso2,
-					responseData[i].GeonameId,
-					responseData[i].Latitude,
-					responseData[i].Longitude,
-					responseData[i].CityName,
-					responseData[i].Timezone,
-					createdAt,
-				}, nil
-			}),
-		); err != nil {
-			log.Printf("error inserting data into city table: %v", err)
-			return err
-		}
-
-		slog.Info("Data inserted into the city table")
+	data, err := fetchAviationStackData("cities")
+	if err != nil {
+		handleError(err, "error fetching data")
+		return err
 	}
+
+	res := new(structs.CityApiData)
+
+	if err := json.NewDecoder(bytes.NewReader(data)).Decode(&res); err != nil {
+		handleError(err, "error unmarshaling API response")
+		return err
+	}
+
+	//Insert data from the json
+	if _, err := conn.CopyFrom(
+
+		context.Background(),
+		pgx.Identifier{"city"},
+		[]string{"gmt", "city_id", "iata_code", "country_iso2", "geoname_id",
+			"latitude", "longitude", "city_name", "timezone", "created_at",
+		},
+		pgx.CopyFromSlice(len(res.Data), func(i int) ([]interface{}, error) {
+			return []interface{}{
+				res.Data[i].GMT,
+				res.Data[i].CityId,
+				res.Data[i].IataCode,
+				res.Data[i].CountryIso2,
+				res.Data[i].GeonameId,
+				res.Data[i].Latitude,
+				res.Data[i].Longitude,
+				res.Data[i].CityName,
+				res.Data[i].Timezone,
+				formatTime(time.Now()),
+			}, nil
+		}),
+	); err != nil {
+		handleError(err, "error inserting data into cities table")
+		return err
+	}
+
+	slog.Info("Data inserted into the city table")
 
 	return nil
 }
@@ -600,13 +513,12 @@ func fetchDataAndInsertCityData(conn *pgxpool.Pool) error {
 
 // REFACTOR FUNCTION TO DELETE fetchData...
 
-func fetchAviationStackData(endpoint string, ch chan<- string, wg *sync.WaitGroup, queryParams ...string) ([]byte, error) {
+func fetchAviationStackData(endpoint string, queryParams ...string) ([]byte, error) {
 	accessKey := os.Getenv("AVIATION_STACK_API_KEY")
 	if accessKey == "" {
 		return nil, fmt.Errorf("missing API access key")
 	}
 
-	defer wg.Done()
 	baseURL := "http://api.aviationstack.com/v1/"
 
 	// Parse the base URL
@@ -647,14 +559,13 @@ func fetchAviationStackData(endpoint string, ch chan<- string, wg *sync.WaitGrou
 		return nil, fmt.Errorf("something is not ok")
 	}
 
-	defer response.Body.Close()
-
 	body, err := io.ReadAll(response.Body)
 
 	if err != nil {
 		return nil, fmt.Errorf("failed to read response body: %v", err)
 	}
 
-	ch <- string(body)
+	defer response.Body.Close()
+
 	return body, nil
 }

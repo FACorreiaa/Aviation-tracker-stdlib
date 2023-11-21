@@ -11,7 +11,7 @@
         </introspection-scope>
       </schema-mapping>
     </data-source>
-    <data-source name="Ollama-dev@localhost" uuid="8f5290d1-5243-4a4a-aa1f-12ce0859b53b">
+    <data-source name="aviation-tracker-dev@localhost" uuid="812ba735-0c5c-49cc-b6c2-842e04ab8c9e">
       <database-info product="PostgreSQL" version="16.1" jdbc-version="4.2" driver-name="PostgreSQL JDBC Driver" driver-version="42.6.0" dbms="POSTGRES" exact-version="16.1" exact-driver-version="42.6">
         <identifier-quote-string>&quot;</identifier-quote-string>
       </database-info>
@@ -20,11 +20,8 @@
       <user-name>postgres</user-name>
       <schema-mapping>
         <introspection-scope>
-          <node negative="1">
-            <node kind="database" qname="@">
-              <node kind="schema" qname="@" />
-            </node>
-            <node kind="database" qname="Ollama-dev" />
+          <node kind="database" qname="@">
+            <node kind="schema" qname="@" />
           </node>
         </introspection-scope>
       </schema-mapping>

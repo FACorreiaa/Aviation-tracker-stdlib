@@ -11,6 +11,7 @@ CREATE TABLE city (
                     timezone varchar(255),
                     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW ()
 );
+
 CREATE TABLE country (
                        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
                        country_name varchar(255),

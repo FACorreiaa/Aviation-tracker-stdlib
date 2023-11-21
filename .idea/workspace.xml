@@ -8,17 +8,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c013bd4f-727c-4da5-8094-985645879420" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/7bb6e210-bd62-48f1-ae06-dbc4b670f9fe.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/7bb6e210-bd62-48f1-ae06-dbc4b670f9fe/storage_v2/_src_/database/postgres.edMnLQ.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/7bb6e210-bd62-48f1-ae06-dbc4b670f9fe/storage_v2/_src_/database/postgres.edMnLQ/schema/information_schema.FNRwLQ.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/7bb6e210-bd62-48f1-ae06-dbc4b670f9fe/storage_v2/_src_/database/postgres.edMnLQ/schema/pg_catalog.0S1ZNQ.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/7bb6e210-bd62-48f1-ae06-dbc4b670f9fe/storage_v2/_src_/database/postgres.edMnLQ/schema/public.abK9xQ.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources/8f5290d1-5243-4a4a-aa1f-12ce0859b53b.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/8f5290d1-5243-4a4a-aa1f-12ce0859b53b.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources/8f5290d1-5243-4a4a-aa1f-12ce0859b53b/storage_v2/_src_/database/Ollama-dev.DjsxjQ/schema/public.abK9xQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/8f5290d1-5243-4a4a-aa1f-12ce0859b53b/storage_v2/_src_/database/Ollama-dev.DjsxjQ/schema/public.abK9xQ.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources/8f5290d1-5243-4a4a-aa1f-12ce0859b53b/storage_v2/_src_/database/Ollama-dev.DjsxjQ/schema/public.abK9xQ.zip" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/8f5290d1-5243-4a4a-aa1f-12ce0859b53b/storage_v2/_src_/database/Ollama-dev.DjsxjQ/schema/public.abK9xQ.zip" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/aviationtracker.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/aviationtracker.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/migrations/5_location.sql" beforeDir="false" afterPath="$PROJECT_DIR$/db/migrations/5_location.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tmp/build-errors.log" beforeDir="false" afterPath="$PROJECT_DIR$/tmp/build-errors.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tmp/main" beforeDir="false" afterPath="$PROJECT_DIR$/tmp/main" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

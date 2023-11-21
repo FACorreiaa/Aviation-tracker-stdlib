@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"time"
 )
 
 func main() {
@@ -61,6 +62,8 @@ func main() {
 		os.Exit(1)
 	}
 
+	startTime := time.Now()
+
 	if err = api.MigrateAirlineAPIData(pool); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -95,6 +98,8 @@ func main() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+
+	fmt.Println("This operation took: ", time.Since(startTime))
 
 	//if err = db.MigrateRedis(redisClient); err != nil {
 	//	fmt.Println(err)

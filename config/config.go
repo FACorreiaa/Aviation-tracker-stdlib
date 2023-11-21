@@ -123,7 +123,7 @@ func NewDatabaseConfig() (*DatabaseConfig, error) {
 	}
 	user := GetEnv("DB_USER", "postgres")
 	pass := GetEnv("DB_PASS", "postgres")
-	dbname := GetEnv("DB_NAME", "Ollama-dev")
+	dbname := GetEnv("DB_NAME", "aviation-tracker-dev")
 	schema := GetEnv("DB_SCHEMA", "")
 
 	query := url.Values{
