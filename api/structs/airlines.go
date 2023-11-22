@@ -17,7 +17,7 @@ type Airline struct {
 	HubCode              string     `json:"hub_code"`
 	IataCode             string     `json:"iata_code"`
 	IcaoCode             string     `json:"icao_code"`
-	CountryIso2          string     `json:"country_iso2"`
+	CountryISO2          string     `json:"country_iso2"`
 	DateFounded          int        `json:"date_founded,string"`
 	IataPrefixAccounting int        `json:"iata_prefix_accounting,string"`
 	AirlineName          string     `json:"airline_name"`

@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"sync"
 	"time"
 )
 
@@ -64,37 +65,39 @@ func main() {
 
 	startTime := time.Now()
 
-	if err = api.MigrateAirlineAPIData(pool); err != nil {
+	tableDataMigration := api.NewRepository(pool)
+	jobRepository := api.NewJobRepository(pool)
+	if err = tableDataMigration.MigrateAirlineAPIData(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 
-	if err = api.MigrateAircraftAPIData(pool); err != nil {
+	if err = tableDataMigration.MigrateAircraftAPIData(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 
-	if err = api.MigrateTaxAPIData(pool); err != nil {
+	if err = tableDataMigration.MigrateTaxAPIData(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 
-	if err = api.MigrateAirplaneAPIData(pool); err != nil {
+	if err = tableDataMigration.MigrateAirplaneAPIData(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 
-	if err = api.MigrateAirportAPIData(pool); err != nil {
+	if err = tableDataMigration.MigrateAirportAPIData(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 
-	if err = api.MigrateCountryAPIData(pool); err != nil {
+	if err = tableDataMigration.MigrateCountryAPIData(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 
-	if err = api.MigrateCityAPIData(pool); err != nil {
+	if err = tableDataMigration.MigrateCityAPIData(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
@@ -114,6 +117,19 @@ func main() {
 		Handler:      controller.Router(pool, []byte(cfg.Server.SessionKey), redisClient),
 	}
 
+	exitChan := make(chan struct{})
+	var wg sync.WaitGroup
+	wg.Add(1)
+
+	//go func() {
+	//	err := jobRepository.StartWorker(&wg, exitChan)
+	//	if err != nil {
+	//		fmt.Println("Error executing job ", err)
+	//
+	//	}
+	//}()
+	go jobRepository.StartWorker(&wg, exitChan)
+
 	go func() {
 		slog.Info("Starting server " + cfg.Server.Addr)
 		if err := srv.ListenAndServe(); err != nil {
@@ -124,6 +140,13 @@ func main() {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 	<-c
+
+	//Signal worker to exit
+	close(exitChan)
+	//Wait for worker to finish
+	wg.Wait()
+
+	//shutdown server
 	ctx, cancel := context.WithTimeout(context.Background(), cfg.Server.GracefulTimeout)
 	defer cancel()
 	srv.Shutdown(ctx)

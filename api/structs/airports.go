@@ -13,8 +13,8 @@ type Airport struct {
 	IataCode     string      `json:"iata_code"`
 	CityIataCode string      `json:"city_iata_code"`
 	IcaoCode     string      `json:"icao_code"`
-	CountryIso2  string      ` json:"country_iso2"`
-	GeonameId    int         ` json:"geoname_id,string"`
+	CountryISO2  string      ` json:"country_iso2"`
+	GeonameID    int         ` json:"geoname_id,string"`
 	Latitude     float64     ` json:"latitude,string"`
 	Longitude    float64     ` json:"longitude,string"`
 	AirportName  string      `json:"airport_name"`

@@ -1,12 +1,12 @@
 CREATE TABLE city (
                     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-                    gmt FLOAT DEFAULT '0.00',
+                    gmt varchar(20),
                     city_id INT DEFAULT 0,
                     iata_code varchar(255),
                     country_iso2 varchar(255),
-                    geoname_id INT DEFAULT 0,
-                    latitude float8 DEFAULT '0.00',
-                    longitude float8 DEFAULT '0.00',
+                    geoname_id varchar(255),
+                    latitude float8 DEFAULT 0.0,
+                    longitude float8 DEFAULT 0.0,
                     city_name varchar(255),
                     timezone varchar(255),
                     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW ()
