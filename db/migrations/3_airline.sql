@@ -62,3 +62,12 @@ CREATE TABLE "tax" (
                    iata_code varchar(255),
                    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW ()
 );
+
+create index on "tax" (id);
+create index on "tax" (tax_id);
+create index on "airplane" (id);
+create index on "airplane" (airplane_id);
+create index on "aircraft" (id);
+create index on "aircraft" (plane_type_id);
+create index on "airline" (id);
+create index on "airline" (airline_id);

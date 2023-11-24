@@ -8,23 +8,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c013bd4f-727c-4da5-8094-985645879420" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/api/cities.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/api/fetch.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/api/jobs.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/api/data/countries.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/8f5290d1-5243-4a4a-aa1f-12ce0859b53b.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/8f5290d1-5243-4a4a-aa1f-12ce0859b53b/storage_v2/_src_/database/Ollama-dev.DjsxjQ.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/8f5290d1-5243-4a4a-aa1f-12ce0859b53b/storage_v2/_src_/database/Ollama-dev.DjsxjQ/schema/information_schema.FNRwLQ.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/8f5290d1-5243-4a4a-aa1f-12ce0859b53b/storage_v2/_src_/database/Ollama-dev.DjsxjQ/schema/pg_catalog.0S1ZNQ.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/8f5290d1-5243-4a4a-aa1f-12ce0859b53b/storage_v2/_src_/database/Ollama-dev.DjsxjQ/schema/public.abK9xQ.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/8f5290d1-5243-4a4a-aa1f-12ce0859b53b/storage_v2/_src_/database/Ollama-dev.DjsxjQ/schema/public.abK9xQ.zip" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/aviationtracker.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/aviationtracker.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/cities.json" beforeDir="false" afterPath="$PROJECT_DIR$/api/data/cities.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/jobs.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/jobs.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/structs/airlines.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/structs/airlines.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/structs/airports.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/structs/airports.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/structs/locations.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/structs/locations.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/migrations/3_airline.sql" beforeDir="false" afterPath="$PROJECT_DIR$/db/migrations/3_airline.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/migrations/4_airport.sql" beforeDir="false" afterPath="$PROJECT_DIR$/db/migrations/4_airport.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db/migrations/5_location.sql" beforeDir="false" afterPath="$PROJECT_DIR$/db/migrations/5_location.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tmp/build-errors.log" beforeDir="false" afterPath="$PROJECT_DIR$/tmp/build-errors.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tmp/main" beforeDir="false" afterPath="$PROJECT_DIR$/tmp/main" afterDir="false" />
@@ -64,28 +60,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "DefaultGoTemplateProperty": "Go File",
-    "DefaultHtmlFileTemplate": "HTML File",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.go.formatter.settings.were.checked": "true",
-    "RunOnceActivity.go.migrated.go.modules.settings": "true",
-    "RunOnceActivity.go.modules.automatic.dependencies.download": "true",
-    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "main",
-    "go.import.settings.migrated": "true",
-    "last_opened_file_path": "/Users/fc/Documents/Projects/aviation-client/api",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "preferences.pluginManager"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.automatic.dependencies.download&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/fc/Documents/Projects/aviation-client/api&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/api" />
@@ -93,11 +89,11 @@
       <recent name="$PROJECT_DIR$/internal/schema" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/api/data" />
       <recent name="$PROJECT_DIR$/controller/static" />
       <recent name="$PROJECT_DIR$/internal/api/handler/external_api/static/templates" />
       <recent name="$PROJECT_DIR$/internal/api/handler/external_api/static" />
       <recent name="$PROJECT_DIR$/internal/api/handler/external_api" />
-      <recent name="$PROJECT_DIR$/internal/api/handler" />
     </key>
   </component>
   <component name="RunManager" selected="Go Build.go build github.com/FACorreiaa/go-ollama">
@@ -203,22 +199,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/api/jobs.go</url>
-          <line>155</line>
-          <option name="timeStamp" value="22" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/api/jobs.go</url>
-          <line>146</line>
-          <option name="timeStamp" value="24" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/api/jobs.go</url>
-          <line>153</line>
-          <option name="timeStamp" value="25" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/api/jobs.go</url>
-          <line>88</line>
+          <line>175</line>
           <option name="timeStamp" value="26" />
         </line-breakpoint>
       </breakpoints>

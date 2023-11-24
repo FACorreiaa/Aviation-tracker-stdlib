@@ -54,68 +54,6 @@ type CountryApiData struct {
 
 type CountryListResponse []Country
 
-//func (c *CustomGMT) UnmarshalJSON(data []byte) error {
-//	var gmtString string
-//	if err := json.Unmarshal(data, &gmtString); err != nil {
-//		return err
-//	}
-//	println(gmtString)
-//	// Parse the time string into hours (float64)
-//	offset, err := parseTimeZoneOffset(gmtString)
-//	if err != nil {
-//		return err
-//	}
-//	println(offset)
-//
-//	c.GMT = &offset
-//
-//	return nil
-//}
-//
-//func parseTimeZoneOffset(offsetString string) (float64, error) {
-//	parts := strings.Split(offsetString, ":")
-//	if len(parts) != 2 {
-//		return 0, fmt.Errorf("invalid time zone offset format: %s", offsetString)
-//	}
-//
-//	// Parse hours and minutes
-//	hours, err := strconv.ParseFloat(parts[0], 64)
-//	if err != nil {
-//		return 0, err
-//	}
-//
-//	// Convert minutes to fractional hours
-//	minutes, err := strconv.ParseFloat(parts[1], 64)
-//	if err != nil {
-//		return 0, err
-//	}
-//
-//	offset := hours + minutes/60.0
-//	return offset, nil
-//}
-
 type CustomFloat struct {
 	float64
 }
-
-//type CustomGMT float64
-//
-//func (g *CustomGMT) UnmarshalJSON(data []byte) error {
-//	var gmtStr string
-//	if err := json.Unmarshal(data, &gmtStr); err != nil {
-//		return err
-//	}
-//
-//	// Handle the special case for "-9:30" and convert it to a float64 value
-//	if gmtStr == "-9:30" {
-//		*g = CustomGMT(-9.5)
-//	} else {
-//		// If it's not the special case, parse the string to float64
-//		gmt, err := strconv.ParseFloat(gmtStr, 64)
-//		if err != nil {
-//			return err
-//		}
-//		*g = CustomGMT(gmt)
-//	}
-//	return nil
-//}

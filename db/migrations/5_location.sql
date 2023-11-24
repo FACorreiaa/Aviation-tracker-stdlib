@@ -27,3 +27,8 @@ CREATE TABLE country (
                        phone_prefix varchar(255),
                        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW ()
 );
+
+create index on "city" (id);
+create index on "city" (city_id);
+create index on "country" (id);
+create index on "country" (country_iso_numeric);

@@ -12,7 +12,6 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"sync"
 	"time"
 )
 
@@ -66,7 +65,6 @@ func main() {
 	startTime := time.Now()
 
 	tableDataMigration := api.NewRepository(pool)
-	jobRepository := api.NewJobRepository(pool)
 	if err = tableDataMigration.MigrateAirlineAPIData(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -117,18 +115,11 @@ func main() {
 		Handler:      controller.Router(pool, []byte(cfg.Server.SessionKey), redisClient),
 	}
 
-	exitChan := make(chan struct{})
-	var wg sync.WaitGroup
-	wg.Add(1)
+	jobRepo := api.NewRepositoryJob(pool)
 
-	//go func() {
-	//	err := jobRepository.StartWorker(&wg, exitChan)
-	//	if err != nil {
-	//		fmt.Println("Error executing job ", err)
-	//
-	//	}
-	//}()
-	go jobRepository.StartWorker(&wg, exitChan)
+	jobService := api.NewServiceJob(jobRepo)
+
+	jobService.StartAPICheckCronJob()
 
 	go func() {
 		slog.Info("Starting server " + cfg.Server.Addr)
@@ -140,11 +131,6 @@ func main() {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 	<-c
-
-	//Signal worker to exit
-	close(exitChan)
-	//Wait for worker to finish
-	wg.Wait()
 
 	//shutdown server
 	ctx, cancel := context.WithTimeout(context.Background(), cfg.Server.GracefulTimeout)
