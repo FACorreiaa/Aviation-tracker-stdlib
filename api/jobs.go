@@ -4,19 +4,15 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/FACorreiaa/go-ollama/api/structs"
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/robfig/cron/v3"
 	"log/slog"
-	"os"
+	"slices"
 	"time"
 )
-
-type JobAPIMethods interface {
-	startCityJobVerification()
-}
 
 type RepositoryJob struct {
 	Conn *pgxpool.Pool
@@ -31,12 +27,11 @@ func NewServiceJob(repo *RepositoryJob) *ServiceJob {
 }
 
 type ServiceJob struct {
-	repo    *RepositoryJob
-	cityJob JobAPIMethods
+	repo *RepositoryJob
 }
 
 // getExistingID retrieves existing table_id from the database
-func (s *ServiceJob) getExistingID(query string, id int, tableData map[int]struct{}) (map[int]struct{}, error) {
+func (s *ServiceJob) getExistingID(query string, id int, tableData []int) ([]int, error) {
 	rows, err := s.repo.Conn.Query(context.Background(), query)
 	if err != nil {
 		handleError(err, "Error querying DB")
@@ -44,23 +39,27 @@ func (s *ServiceJob) getExistingID(query string, id int, tableData map[int]struc
 	}
 	defer rows.Close()
 
+	var existingIDs []int
+
 	for rows.Next() {
 		if err := rows.Scan(&id); err != nil {
 			handleError(err, "Error scanning IDs")
 			return nil, err
 		}
-		tableData[id] = struct{}{}
+		existingIDs = append(existingIDs, id)
 	}
 
 	return tableData, nil
 }
 
-// findNewCityData identifies new city data by comparing the API data with existing data
-func (s *ServiceJob) findNewCityData(apiData []structs.City, tableData map[int]struct{}) []structs.City {
+// findNewCityData slcies version
+func (s *ServiceJob) findNewCityData(apiData []structs.City, tableData []int) []structs.City {
 	var newData []structs.City
 
 	for _, a := range apiData {
-		if _, exists := tableData[a.CityID]; !exists {
+		if hasKey := slices.ContainsFunc(tableData, func(cityID int) bool {
+			return cityID == a.CityID
+		}); !hasKey {
 			newData = append(newData, a)
 		}
 	}
@@ -68,11 +67,13 @@ func (s *ServiceJob) findNewCityData(apiData []structs.City, tableData map[int]s
 	return newData
 }
 
-func (s *ServiceJob) findNewCountryData(apiData []structs.Country, tableData map[int]struct{}) []structs.Country {
+func (s *ServiceJob) findNewCountryData(apiData []structs.Country, tableData []int) []structs.Country {
 	var newData []structs.Country
 
 	for _, a := range apiData {
-		if _, exists := tableData[a.CountryIsoNumeric]; !exists {
+		if hasKey := slices.ContainsFunc(tableData, func(c int) bool {
+			return c == a.CountryIsoNumeric
+		}); !hasKey {
 			newData = append(newData, a)
 		}
 	}
@@ -80,11 +81,13 @@ func (s *ServiceJob) findNewCountryData(apiData []structs.Country, tableData map
 	return newData
 }
 
-func (s *ServiceJob) findNewAirportData(apiData []structs.Airport, tableData map[int]struct{}) []structs.Airport {
+func (s *ServiceJob) findNewAirportData(apiData []structs.Airport, tableData []int) []structs.Airport {
 	var newData []structs.Airport
 
 	for _, a := range apiData {
-		if _, exists := tableData[a.AirportId]; !exists {
+		if hasKey := slices.ContainsFunc(tableData, func(airportID int) bool {
+			return airportID == a.AirportId
+		}); !hasKey {
 			newData = append(newData, a)
 		}
 	}
@@ -92,11 +95,13 @@ func (s *ServiceJob) findNewAirportData(apiData []structs.Airport, tableData map
 	return newData
 }
 
-func (s *ServiceJob) findNewAirplaneData(apiData []structs.Airplane, tableData map[int]struct{}) []structs.Airplane {
+func (s *ServiceJob) findNewAirplaneData(apiData []structs.Airplane, tableData []int) []structs.Airplane {
 	var newData []structs.Airplane
 
 	for _, a := range apiData {
-		if _, exists := tableData[a.AirplaneId]; !exists {
+		if hasKey := slices.ContainsFunc(tableData, func(airplaneID int) bool {
+			return airplaneID == a.AirplaneId
+		}); !hasKey {
 			newData = append(newData, a)
 		}
 	}
@@ -104,11 +109,13 @@ func (s *ServiceJob) findNewAirplaneData(apiData []structs.Airplane, tableData m
 	return newData
 }
 
-func (s *ServiceJob) findNewTaxData(apiData []structs.Tax, tableData map[int]struct{}) []structs.Tax {
+func (s *ServiceJob) findNewTaxData(apiData []structs.Tax, tableData []int) []structs.Tax {
 	var newData []structs.Tax
 
 	for _, a := range apiData {
-		if _, exists := tableData[a.TaxId]; !exists {
+		if hasKey := slices.ContainsFunc(tableData, func(taxID int) bool {
+			return taxID == a.TaxId
+		}); !hasKey {
 			newData = append(newData, a)
 		}
 	}
@@ -116,11 +123,13 @@ func (s *ServiceJob) findNewTaxData(apiData []structs.Tax, tableData map[int]str
 	return newData
 }
 
-func (s *ServiceJob) findNewAirlineData(apiData []structs.Airline, tableData map[int]struct{}) []structs.Airline {
+func (s *ServiceJob) findNewAirlineData(apiData []structs.Airline, tableData []int) []structs.Airline {
 	var newData []structs.Airline
 
 	for _, a := range apiData {
-		if _, exists := tableData[a.AirlineId]; !exists {
+		if hasKey := slices.ContainsFunc(tableData, func(airlineID int) bool {
+			return airlineID == a.AirlineId
+		}); !hasKey {
 			newData = append(newData, a)
 		}
 	}
@@ -128,11 +137,13 @@ func (s *ServiceJob) findNewAirlineData(apiData []structs.Airline, tableData map
 	return newData
 }
 
-func (s *ServiceJob) findNewAircraftData(apiData []structs.Aircraft, tableData map[int]struct{}) []structs.Aircraft {
+func (s *ServiceJob) findNewAircraftData(apiData []structs.Aircraft, tableData []int) []structs.Aircraft {
 	var newData []structs.Aircraft
 
 	for _, a := range apiData {
-		if _, exists := tableData[a.PlaneTypeId]; !exists {
+		if hasKey := slices.ContainsFunc(tableData, func(p int) bool {
+			return p == a.PlaneTypeId
+		}); !hasKey {
 			newData = append(newData, a)
 		}
 	}
@@ -140,17 +151,99 @@ func (s *ServiceJob) findNewAircraftData(apiData []structs.Aircraft, tableData m
 	return newData
 }
 
+// findNewCityData identifies new city data by comparing the API data with existing data
+//func (s *ServiceJob) findNewCityData(apiData []structs.City, tableData map[int]struct{}) []structs.City {
+//	var newData []structs.City
+//
+//	for _, a := range apiData {
+//		if _, exists := tableData[a.CityID]; !exists {
+//			newData = append(newData, a)
+//		}
+//	}
+//
+//	return newData
+//}
+//
+//func (s *ServiceJob) findNewCountryData(apiData []structs.Country, tableData map[int]struct{}) []structs.Country {
+//	var newData []structs.Country
+//
+//	for _, a := range apiData {
+//		if _, exists := tableData[a.CountryIsoNumeric]; !exists {
+//			newData = append(newData, a)
+//		}
+//	}
+//
+//	return newData
+//}
+//
+//func (s *ServiceJob) findNewAirportData(apiData []structs.Airport, tableData map[int]struct{}) []structs.Airport {
+//	var newData []structs.Airport
+//
+//	for _, a := range apiData {
+//		if _, exists := tableData[a.AirportId]; !exists {
+//			newData = append(newData, a)
+//		}
+//	}
+//
+//	return newData
+//}
+//
+//func (s *ServiceJob) findNewAirplaneData(apiData []structs.Airplane, tableData map[int]struct{}) []structs.Airplane {
+//	var newData []structs.Airplane
+//
+//	for _, a := range apiData {
+//		if _, exists := tableData[a.AirplaneId]; !exists {
+//			newData = append(newData, a)
+//		}
+//	}
+//
+//	return newData
+//}
+//
+//func (s *ServiceJob) findNewTaxData(apiData []structs.Tax, tableData map[int]struct{}) []structs.Tax {
+//	var newData []structs.Tax
+//
+//	for _, a := range apiData {
+//		if _, exists := tableData[a.TaxId]; !exists {
+//			newData = append(newData, a)
+//		}
+//	}
+//
+//	return newData
+//}
+//
+//func (s *ServiceJob) findNewAirlineData(apiData []structs.Airline, tableData map[int]struct{}) []structs.Airline {
+//	var newData []structs.Airline
+//
+//	for _, a := range apiData {
+//		if _, exists := tableData[a.AirlineId]; !exists {
+//			newData = append(newData, a)
+//		}
+//	}
+//
+//	return newData
+//}
+//
+//func (s *ServiceJob) findNewAircraftData(apiData []structs.Aircraft, tableData map[int]struct{}) []structs.Aircraft {
+//	var newData []structs.Aircraft
+//
+//	for _, a := range apiData {
+//		if _, exists := tableData[a.PlaneTypeId]; !exists {
+//			newData = append(newData, a)
+//		}
+//	}
+//
+//	return newData
+//}
+
 func (s *ServiceJob) insertNewCities() error {
-	// Fetch data from the API
-	//apiData, err := fetchAviationStackData("cities", 1000000)
+
+	apiData, err := fetchAviationStackData("cities")
 	query := `select city_id from city`
-	tableData := make(map[int]struct{})
+	var tableData []int
 	var cityID int
 
-	apiData, err := os.ReadFile("./api/data/cities.json")
-	if err != nil {
-		fmt.Print(err)
-	}
+	//apiData, err := os.ReadFile("./api/data/cities.json")
 
 	if err != nil {
 		handleError(err, "error fetching data")
@@ -213,16 +306,13 @@ func (s *ServiceJob) insertNewCities() error {
 }
 
 func (s *ServiceJob) insertNewCountries() error {
-	// Fetch data from the API
-	//apiData, err := fetchAviationStackData("countries", 1000000)
+
+	apiData, err := fetchAviationStackData("countries")
 	query := `select country_iso_numeric from country`
-	tableData := make(map[int]struct{})
+	tableData := make([]int, 0)
 	var countryIsoNumeric int
 
-	apiData, err := os.ReadFile("./api/data/countries.json")
-	if err != nil {
-		fmt.Print(err)
-	}
+	//apiData, err := os.ReadFile("./api/data/countries.json")
 
 	if err != nil {
 		handleError(err, "error fetching data")
@@ -288,16 +378,13 @@ func (s *ServiceJob) insertNewCountries() error {
 }
 
 func (s *ServiceJob) insertNewAirports() error {
-	// Fetch data from the API
-	//apiData, err := fetchAviationStackData("countries", 1000000)
-	query := `select airport_id from airport`
-	tableData := make(map[int]struct{})
-	var airport_id int
 
-	apiData, err := os.ReadFile("./api/data/airports.json")
-	if err != nil {
-		fmt.Print(err)
-	}
+	apiData, err := fetchAviationStackData("countries")
+	query := `select airport_id from airport`
+	tableData := make([]int, 0)
+	var airportID int
+
+	//apiData, err := os.ReadFile("./api/data/airports.json")
 
 	if err != nil {
 		handleError(err, "error fetching data")
@@ -312,7 +399,7 @@ func (s *ServiceJob) insertNewAirports() error {
 	}
 
 	// Check for existing data in the database
-	existingData, err := s.getExistingID(query, airport_id, tableData)
+	existingData, err := s.getExistingID(query, airportID, tableData)
 
 	if err != nil {
 		handleError(err, "error getting existing data from the database")
@@ -356,16 +443,13 @@ func (s *ServiceJob) insertNewAirports() error {
 }
 
 func (s *ServiceJob) insertNewAirplanes() error {
-	// Fetch data from the API
-	//apiData, err := fetchAviationStackData("countries", 1000000)
+
+	apiData, err := fetchAviationStackData("countries")
 	query := `select airplane_id from airplane`
-	tableData := make(map[int]struct{})
+	tableData := make([]int, 0)
 	var airplaneID int
 
-	apiData, err := os.ReadFile("./api/data/airplane.json")
-	if err != nil {
-		fmt.Print(err)
-	}
+	//apiData, err := os.ReadFile("./api/data/airplane.json")
 
 	if err != nil {
 		handleError(err, "error fetching data")
@@ -447,17 +531,13 @@ func (s *ServiceJob) insertNewAirplanes() error {
 }
 
 func (s *ServiceJob) insertNewTax() error {
-	// Fetch data from the API
-	//apiData, err := fetchAviationStackData("countries", 1000000)
+
+	apiData, err := fetchAviationStackData("countries")
 	query := `select tax_id from tax`
-	tableData := make(map[int]struct{})
+	tableData := make([]int, 0)
 	var tax_id int
 
-	apiData, err := os.ReadFile("./api/data/tax.json")
-	if err != nil {
-		fmt.Print(err)
-	}
-
+	//apiData, err := os.ReadFile("./api/data/tax.json")
 	if err != nil {
 		handleError(err, "error fetching data")
 		return err
@@ -509,16 +589,13 @@ func (s *ServiceJob) insertNewTax() error {
 }
 
 func (s *ServiceJob) insertNewAirline() error {
-	// Fetch data from the API
-	//apiData, err := fetchAviationStackData("countries", 1000000)
+
+	apiData, err := fetchAviationStackData("countries")
 	query := `select airline_id from airline`
-	tableData := make(map[int]struct{})
+	tableData := make([]int, 0)
 	var airlineID int
 
-	apiData, err := os.ReadFile("./api/data/airline.json")
-	if err != nil {
-		fmt.Print(err)
-	}
+	//apiData, err := os.ReadFile("./api/data/airline.json")
 
 	if err != nil {
 		handleError(err, "error fetching data")
@@ -586,16 +663,13 @@ func (s *ServiceJob) insertNewAirline() error {
 }
 
 func (s *ServiceJob) insertNewAircraft() error {
-	// Fetch data from the API
-	//apiData, err := fetchAviationStackData("countries", 1000000)
+
+	apiData, err := fetchAviationStackData("countries")
 	query := `select plane_type_id from aircraft`
-	tableData := make(map[int]struct{})
+	tableData := make([]int, 0)
 	var planeTypeID int
 
-	apiData, err := os.ReadFile("./api/data/aircraft.json")
-	if err != nil {
-		fmt.Print(err)
-	}
+	//apiData, err := os.ReadFile("./api/data/aircraft.json")
 
 	if err != nil {
 		handleError(err, "error fetching data")
@@ -649,50 +723,113 @@ func (s *ServiceJob) insertNewAircraft() error {
 	return nil
 }
 
+func (s *ServiceJob) insertNewFlight() error {
+	data, err := fetchAviationStackData("flights", "limit=1000000")
+	if err != nil {
+		handleError(err, "error fetching data")
+		return err
+	}
+	res := new(structs.FlightApiData)
+	if err := json.NewDecoder(bytes.NewReader(data)).Decode(&res); err != nil {
+		handleError(err, "error unmarshaling API response")
+		return err
+	}
+
+	// Insert data from the JSON
+	if _, err := s.repo.Conn.CopyFrom(
+		context.Background(),
+		pgx.Identifier{"flights"},
+		[]string{"id", "flight_date", "flight_status", "departure_airport", "departure_timezone", "departure_iata",
+			"departure_icao", "departure_terminal", "departure_gate", "departure_delay", "departure_scheduled",
+			"departure_estimated", "departure_actual", "departure_estimated_runway", "departure_actual_runway",
+			"arrival_airport", "arrival_timezone", "arrival_iata", "arrival_icao", "arrival_terminal",
+			"arrival_gate", "arrival_baggage", "arrival_delay", "arrival_scheduled", "arrival_estimated",
+			"arrival_actual", "arrival_estimated_runway", "arrival_actual_runway", "flight_number", "flight_iata",
+			"flight_icao", "codeshared_airline_name", "codeshared_airline_iata", "codeshared_airline_icao",
+			"codeshared_flight_number", "codeshared_flight_iata", "codeshared_flight_icao", "aircraft_id", "live", "created_at",
+		},
+		pgx.CopyFromSlice(len(res.Data), func(i int) ([]interface{}, error) {
+			id := uuid.New()
+			return []interface{}{
+				id, res.Data[i].FlightDate, res.Data[i].FlightStatus, res.Data[i].Departure.Airport,
+				res.Data[i].Departure.Timezone, res.Data[i].Departure.Iata, res.Data[i].Departure.Icao,
+				res.Data[i].Departure.Terminal, res.Data[i].Departure.Gate, res.Data[i].Departure.Delay,
+				res.Data[i].Departure.Scheduled, res.Data[i].Departure.Estimated, res.Data[i].Departure.Actual,
+				res.Data[i].Departure.EstimatedRunway, res.Data[i].Departure.ActualRunway,
+				res.Data[i].Arrival.Airport, res.Data[i].Arrival.Timezone, res.Data[i].Arrival.Iata,
+				res.Data[i].Arrival.Icao, res.Data[i].Arrival.Terminal, res.Data[i].Arrival.Gate,
+				res.Data[i].Arrival.Baggage, res.Data[i].Arrival.Delay, res.Data[i].Arrival.Scheduled, res.Data[i].Arrival.Estimated,
+				res.Data[i].Arrival.Actual, res.Data[i].Arrival.EstimatedRunway, res.Data[i].Arrival.ActualRunway,
+				res.Data[i].Flight.Number, res.Data[i].Flight.Iata, res.Data[i].Flight.Icao,
+				res.Data[i].Flight.Codeshared.AirlineName,
+				res.Data[i].Flight.Codeshared.AirlineIata, res.Data[i].Flight.Codeshared.AirlineIcao,
+				res.Data[i].Flight.Codeshared.FlightNumber, res.Data[i].Flight.Codeshared.FlightIata,
+				res.Data[i].Flight.Codeshared.FlightIcao, res.Data[i].Aircraft, res.Data[i].Live,
+				formatTime(time.Now()),
+			}, nil
+		}),
+	); err != nil {
+		handleError(err, "error inserting data into flights table")
+		return err
+	}
+
+	slog.Info("Data inserted into the flights table")
+	return nil
+}
+
 func (s *ServiceJob) StartAPICheckCronJob() {
 	c := cron.New()
-	slog.Info("Insert city job started")
-	c.AddFunc("@every 1m", func() {
+	cron.New(cron.WithChain(
+		cron.Recover(cron.DefaultLogger), // or use cron.DefaultLogger
+	))
+	slog.Info("update api data job started")
+	c.AddFunc("@weekly", func() {
 		startTime := time.Now()
 		err := s.insertNewCities()
 		slog.Info("City job finished in: ", time.Since(startTime))
 		handleError(err, "Error checking for new cities")
 	})
-	c.AddFunc("@every 1m", func() {
+	c.AddFunc("@weekly", func() {
 		startTime := time.Now()
 		err := s.insertNewCountries()
 		slog.Info("Country job finished in: ", time.Since(startTime))
 		handleError(err, "Error checking for new countries")
 	})
-	c.AddFunc("@every 1m", func() {
+	c.AddFunc("@weekly", func() {
 		startTime := time.Now()
 		err := s.insertNewAirports()
 		slog.Info("Airport job finished in: ", time.Since(startTime))
 		handleError(err, "Error checking for new countries")
 	})
-	c.AddFunc("@every 1m", func() {
+	c.AddFunc("@weekly", func() {
 		startTime := time.Now()
 		err := s.insertNewAirplanes()
-		slog.Info("Airport job finished in: ", time.Since(startTime))
-		handleError(err, "Error checking for new countries")
+		slog.Info("Airplane job finished in: ", time.Since(startTime))
+		handleError(err, "Error checking for new Airplane")
 	})
-	c.AddFunc("@every 1m", func() {
+	c.AddFunc("@weekly", func() {
 		startTime := time.Now()
 		err := s.insertNewTax()
 		slog.Info("Tax job finished in: ", time.Since(startTime))
 		handleError(err, "Error checking for new tax")
 	})
-	c.AddFunc("@every 1m", func() {
+	c.AddFunc("@weekly", func() {
 		startTime := time.Now()
 		err := s.insertNewAirline()
 		slog.Info("Airline job finished in: ", time.Since(startTime))
 		handleError(err, "Error checking for new airline")
 	})
-	c.AddFunc("@every 1m", func() {
+	c.AddFunc("@weekly", func() {
 		startTime := time.Now()
 		err := s.insertNewAircraft()
 		slog.Info("Aircraft job finished in: ", time.Since(startTime))
 		handleError(err, "Error checking for new aircraft")
+	})
+	c.AddFunc("@daily", func() {
+		startTime := time.Now()
+		err := s.insertNewFlight()
+		slog.Info("Flight job finished in: ", time.Since(startTime))
+		handleError(err, "Error checking for new Flight")
 	})
 
 	c.Start()

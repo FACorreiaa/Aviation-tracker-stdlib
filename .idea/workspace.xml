@@ -8,19 +8,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c013bd4f-727c-4da5-8094-985645879420" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/api/data/countries.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/db/migrations/6_flights.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/cities.json" beforeDir="false" afterPath="$PROJECT_DIR$/api/data/cities.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/aviationtracker.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/aviationtracker.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/fetch.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/fetch.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/jobs.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/jobs.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/structs/airlines.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/structs/airlines.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/structs/airports.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/structs/airports.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/structs/live.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/structs/live.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/structs/locations.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/structs/locations.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db/migrations/3_airline.sql" beforeDir="false" afterPath="$PROJECT_DIR$/db/migrations/3_airline.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db/migrations/4_airport.sql" beforeDir="false" afterPath="$PROJECT_DIR$/db/migrations/4_airport.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db/migrations/5_location.sql" beforeDir="false" afterPath="$PROJECT_DIR$/db/migrations/5_location.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tmp/build-errors.log" beforeDir="false" afterPath="$PROJECT_DIR$/tmp/build-errors.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tmp/main" beforeDir="false" afterPath="$PROJECT_DIR$/tmp/main" afterDir="false" />
@@ -79,7 +75,12 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;com.intellij.ide.scratch.LRUPopupBuilder$1/SQL Dialect&quot;: [
+      &quot;PostgreSQL&quot;
+    ]
   }
 }</component>
   <component name="RecentsManager">
@@ -168,6 +169,17 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
@@ -199,8 +211,33 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/api/jobs.go</url>
-          <line>175</line>
-          <option name="timeStamp" value="26" />
+          <line>155</line>
+          <option name="timeStamp" value="38" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/api/jobs.go</url>
+          <line>51</line>
+          <option name="timeStamp" value="40" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/api/jobs.go</url>
+          <line>163</line>
+          <option name="timeStamp" value="41" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/api/fetch.go</url>
+          <line>438</line>
+          <option name="timeStamp" value="44" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/api/structs/airlines.go</url>
+          <line>101</line>
+          <option name="timeStamp" value="49" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/api/structs/airlines.go</url>
+          <line>121</line>
+          <option name="timeStamp" value="50" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -99,6 +99,10 @@ func main() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+	if err = tableDataMigration.MigrateFlightAPIData(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 
 	fmt.Println("This operation took: ", time.Since(startTime))
 

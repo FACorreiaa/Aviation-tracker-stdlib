@@ -102,6 +102,7 @@ func (ct *CustomTime) UnmarshalJSON(data []byte) error {
 	var dateStr string
 	err := json.Unmarshal(data, &dateStr)
 	if err != nil {
+		fmt.Println("Error parsing date: ", err)
 		return err
 	}
 
@@ -120,6 +121,7 @@ func (ct *CustomTime) UnmarshalJSON(data []byte) error {
 	// Parse the date using the predefined time layout
 	t, err := time.Parse(time.RFC3339, dateStr)
 	if err != nil {
+		fmt.Println("Error parsing date: ", err)
 		return err
 	}
 

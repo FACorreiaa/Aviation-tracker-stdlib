@@ -22,4 +22,4 @@ Modelfile
 .vscode/
 dump.rdb
 main.tfvars
-api/data/
+api/data

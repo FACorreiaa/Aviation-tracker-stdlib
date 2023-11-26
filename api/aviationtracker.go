@@ -26,6 +26,7 @@ type MigrateInterface interface {
 	MigrateAirportAPIData() error
 	MigrateCountryAPIData() error
 	MigrateCityAPIData() error
+	MigrateFlightAPIData() error
 }
 
 type MigrateRepository struct {
@@ -196,6 +197,30 @@ func (m *MigrateRepository) MigrateCityAPIData() error {
 	if count == 0 {
 		// No data in the airport table, fetch from the external API
 		if err := FetchAndInsertCityData(m.conn); err != nil {
+			handleError(err, "Error inserting data")
+			return err
+		}
+	}
+	slog.Info("Migrations finished")
+	return nil
+}
+
+/* Flights */
+
+func (m *MigrateRepository) MigrateFlightAPIData() error {
+	slog.Info("Running API check")
+	ctx := context.Background()
+	slog.Info("checking for data on the DB")
+
+	var count int
+	if err := m.conn.QueryRow(ctx, "SELECT COUNT(*) FROM flights").Scan(&count); err != nil {
+		handleError(err, "Error querying the table")
+		return err
+	}
+
+	if count == 0 {
+		// No data in the flights table, fetch from the external API
+		if err := FetchAndInsertFlightData(m.conn); err != nil {
 			handleError(err, "Error inserting data")
 			return err
 		}

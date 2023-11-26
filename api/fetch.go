@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/FACorreiaa/go-ollama/api/structs"
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"io"
@@ -13,12 +14,11 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"strconv"
 	"strings"
 	"time"
 )
 
-func fetchAviationStackData(endpoint string, limit int, queryParams ...string) ([]byte, error) {
+func fetchAviationStackData(endpoint string, queryParams ...string) ([]byte, error) {
 	accessKey := os.Getenv("AVIATION_STACK_API_KEY")
 	if accessKey == "" {
 		return nil, fmt.Errorf("missing API access key")
@@ -40,10 +40,6 @@ func fetchAviationStackData(endpoint string, limit int, queryParams ...string) (
 
 	// Add the access key parameter
 	query.Set("access_key", accessKey)
-
-	if limit > 0 {
-		query.Set("limit", strconv.Itoa(limit))
-	}
 
 	// Add additional query parameters
 	if len(queryParams) > 0 {
@@ -80,7 +76,7 @@ func fetchAviationStackData(endpoint string, limit int, queryParams ...string) (
 }
 
 func FetchAndInsertCityData(conn *pgxpool.Pool) error {
-	data, err := fetchAviationStackData("cities", 100)
+	data, err := fetchAviationStackData("cities", "limit=1000000")
 	if err != nil {
 		handleError(err, "error fetching data")
 		return err
@@ -127,7 +123,7 @@ func FetchAndInsertCityData(conn *pgxpool.Pool) error {
 
 func FetchAndInsertCountryData(conn *pgxpool.Pool) error {
 	res := new(structs.CountryApiData)
-	data, err := fetchAviationStackData("countries", 100)
+	data, err := fetchAviationStackData("countries", "limit=1000000")
 	if err != nil {
 		handleError(err, "error fetching data")
 		return err
@@ -174,7 +170,7 @@ func FetchAndInsertCountryData(conn *pgxpool.Pool) error {
 
 func FetchAndInsertAirportData(conn *pgxpool.Pool) error {
 	res := new(structs.AirportApiData)
-	data, err := fetchAviationStackData("airports", 100)
+	data, err := fetchAviationStackData("airports", "limit=1000000")
 	if err != nil {
 		handleError(err, "error fetching data")
 		return err
@@ -212,7 +208,7 @@ func FetchAndInsertAirportData(conn *pgxpool.Pool) error {
 }
 
 func FetchAndInsertAirplaneData(conn *pgxpool.Pool) error {
-	data, err := fetchAviationStackData("airplanes", 100)
+	data, err := fetchAviationStackData("airplanes", "limit=1000000")
 	if err != nil {
 		handleError(err, "error fetching data")
 		return err
@@ -275,7 +271,7 @@ func FetchAndInsertAirplaneData(conn *pgxpool.Pool) error {
 }
 
 func FetchAndInsertTaxData(conn *pgxpool.Pool) error {
-	data, err := fetchAviationStackData("taxes", 100)
+	data, err := fetchAviationStackData("taxes", "limit=1000000")
 	if err != nil {
 		handleError(err, "error fetching data")
 		return err
@@ -309,7 +305,7 @@ func FetchAndInsertTaxData(conn *pgxpool.Pool) error {
 
 func FetchAndInsertAircraftData(conn *pgxpool.Pool) error {
 	res := new(structs.AircraftApiData)
-	data, err := fetchAviationStackData("aircraft_types", 100)
+	data, err := fetchAviationStackData("aircraft_types", "limit=1000000")
 	if err != nil {
 		handleError(err, "error fetching data")
 		return err
@@ -345,7 +341,7 @@ func FetchAndInsertAircraftData(conn *pgxpool.Pool) error {
 }
 
 func FetchAndInsertAirlineData(conn *pgxpool.Pool) error {
-	data, err := fetchAviationStackData("airlines", 100)
+	data, err := fetchAviationStackData("airlines", "limit=1000000")
 	if err != nil {
 		handleError(err, "error fetching data")
 		return err
@@ -389,5 +385,61 @@ func FetchAndInsertAirlineData(conn *pgxpool.Pool) error {
 	}
 
 	slog.Info("Data inserted into the airline table")
+	return nil
+}
+
+func FetchAndInsertFlightData(conn *pgxpool.Pool) error {
+	//data, err := os.ReadFile("./api/data/flights.json")
+
+	data, err := fetchAviationStackData("flights", "limit=1000000")
+	if err != nil {
+		handleError(err, "error fetching data")
+		return err
+	}
+	res := new(structs.FlightApiData)
+	if err := json.NewDecoder(bytes.NewReader(data)).Decode(&res); err != nil {
+		handleError(err, "error unmarshaling API response")
+		return err
+	}
+
+	// Insert data from the JSON
+	if _, err := conn.CopyFrom(
+		context.Background(),
+		pgx.Identifier{"flights"},
+		[]string{"id", "flight_date", "flight_status", "departure_airport", "departure_timezone", "departure_iata",
+			"departure_icao", "departure_terminal", "departure_gate", "departure_delay", "departure_scheduled",
+			"departure_estimated", "departure_actual", "departure_estimated_runway", "departure_actual_runway",
+			"arrival_airport", "arrival_timezone", "arrival_iata", "arrival_icao", "arrival_terminal",
+			"arrival_gate", "arrival_baggage", "arrival_delay", "arrival_scheduled", "arrival_estimated",
+			"arrival_actual", "arrival_estimated_runway", "arrival_actual_runway", "flight_number", "flight_iata",
+			"flight_icao", "codeshared_airline_name", "codeshared_airline_iata", "codeshared_airline_icao",
+			"codeshared_flight_number", "codeshared_flight_iata", "codeshared_flight_icao", "aircraft_id", "live", "created_at",
+		},
+		pgx.CopyFromSlice(len(res.Data), func(i int) ([]interface{}, error) {
+			id := uuid.New()
+			return []interface{}{
+				id, res.Data[i].FlightDate, res.Data[i].FlightStatus, res.Data[i].Departure.Airport,
+				res.Data[i].Departure.Timezone, res.Data[i].Departure.Iata, res.Data[i].Departure.Icao,
+				res.Data[i].Departure.Terminal, res.Data[i].Departure.Gate, res.Data[i].Departure.Delay,
+				res.Data[i].Departure.Scheduled, res.Data[i].Departure.Estimated, res.Data[i].Departure.Actual,
+				res.Data[i].Departure.EstimatedRunway, res.Data[i].Departure.ActualRunway,
+				res.Data[i].Arrival.Airport, res.Data[i].Arrival.Timezone, res.Data[i].Arrival.Iata,
+				res.Data[i].Arrival.Icao, res.Data[i].Arrival.Terminal, res.Data[i].Arrival.Gate,
+				res.Data[i].Arrival.Baggage, res.Data[i].Arrival.Delay, res.Data[i].Arrival.Scheduled, res.Data[i].Arrival.Estimated,
+				res.Data[i].Arrival.Actual, res.Data[i].Arrival.EstimatedRunway, res.Data[i].Arrival.ActualRunway,
+				res.Data[i].Flight.Number, res.Data[i].Flight.Iata, res.Data[i].Flight.Icao,
+				res.Data[i].Flight.Codeshared.AirlineName,
+				res.Data[i].Flight.Codeshared.AirlineIata, res.Data[i].Flight.Codeshared.AirlineIcao,
+				res.Data[i].Flight.Codeshared.FlightNumber, res.Data[i].Flight.Codeshared.FlightIata,
+				res.Data[i].Flight.Codeshared.FlightIcao, res.Data[i].Aircraft, res.Data[i].Live,
+				formatTime(time.Now()),
+			}, nil
+		}),
+	); err != nil {
+		handleError(err, "error inserting data into flights table")
+		return err
+	}
+
+	slog.Info("Data inserted into the flights table")
 	return nil
 }

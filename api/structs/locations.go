@@ -28,8 +28,6 @@ type CityApiData struct {
 	Data       []City     `json:"data"`
 }
 
-type CityListResponse []City
-
 //countries
 
 type Country struct {
@@ -49,11 +47,6 @@ type Country struct {
 }
 
 type CountryApiData struct {
-	Data []Country `json:"data"`
-}
-
-type CountryListResponse []Country
-
-type CustomFloat struct {
-	float64
+	Pagination Pagination `json:"pagination"`
+	Data       []Country  `json:"data"`
 }
