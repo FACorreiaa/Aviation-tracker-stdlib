@@ -9,8 +9,11 @@
   <component name="ChangeListManager">
     <list default="true" id="c013bd4f-727c-4da5-8094-985645879420" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/fetch.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/fetch.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/jobs.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/jobs.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/structs/locations.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/structs/locations.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/structs/live.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/structs/live.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/migrations/6_flights.sql" beforeDir="false" afterPath="$PROJECT_DIR$/db/migrations/6_flights.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tmp/build-errors.log" beforeDir="false" afterPath="$PROJECT_DIR$/tmp/build-errors.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tmp/main" beforeDir="false" afterPath="$PROJECT_DIR$/tmp/main" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -161,6 +164,17 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ID_ORDER">
+      <list>
+        <option value="Default.Root" />
+        <option value="Default.Author" />
+        <option value="Default.Date" />
+        <option value="Default.Subject" />
+        <option value="Space.CommitStatus" />
+      </list>
+    </option>
+  </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
@@ -203,12 +217,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/api/jobs.go</url>
-          <line>88</line>
+          <line>59</line>
           <option name="timeStamp" value="40" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/api/fetch.go</url>
-          <line>438</line>
+          <line>446</line>
           <option name="timeStamp" value="44" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
@@ -223,8 +237,18 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/api/jobs.go</url>
-          <line>739</line>
-          <option name="timeStamp" value="58" />
+          <line>64</line>
+          <option name="timeStamp" value="63" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/api/jobs.go</url>
+          <line>196</line>
+          <option name="timeStamp" value="69" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/api/jobs.go</url>
+          <line>163</line>
+          <option name="timeStamp" value="73" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

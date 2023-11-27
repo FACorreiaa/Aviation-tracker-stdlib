@@ -30,41 +30,12 @@ type ServiceJob struct {
 	repo *RepositoryJob
 }
 
-// getTableID retrieves existing table_id from the database
-func (s *ServiceJob) getTableID(query string, id int, tableData []int) ([]int, error) {
-	rows, err := s.repo.Conn.Query(context.Background(), query)
-	if err != nil {
-		handleError(err, "Error querying DB")
-		return nil, err
-	}
-	defer rows.Close()
-
-	var existingIDs []int
-
-	for rows.Next() {
-		if err := rows.Scan(&id); err != nil {
-			handleError(err, "Error scanning IDs")
-			return nil, err
-		}
-		existingIDs = append(existingIDs, id)
-	}
-
-	return tableData, nil
+type Model struct {
+	City structs.City
 }
 
-// findNewData slcies version
-func (s *ServiceJob) findNewData(apiData []structs.City, tableData []int) []structs.City {
-	var newData []structs.City
-
-	for _, a := range apiData {
-		if hasKey := slices.ContainsFunc(tableData, func(cityID int) bool {
-			return cityID == a.CityID
-		}); !hasKey {
-			newData = append(newData, a)
-		}
-	}
-
-	return newData
+func (model Model) GetID() int {
+	return model.City.CityID
 }
 
 // getExistingID retrieves existing table_id from the database
@@ -209,6 +180,11 @@ func (s *ServiceJob) insertNewCities() error {
 		return err
 	}
 
+	var models []Model
+	for _, city := range apiRes.Data {
+		models = append(models, Model{City: city})
+	}
+
 	// Check for existing data in the database
 	existingData, err := s.getExistingID(query, cityID, tableData)
 
@@ -219,7 +195,7 @@ func (s *ServiceJob) insertNewCities() error {
 
 	// Identify new data that is not already in the database
 	newDataMap := s.findNewCityData(apiRes.Data, existingData)
-
+	println(len(newDataMap))
 	// Insert only the new data into the database
 	if len(newDataMap) > 0 {
 
@@ -730,59 +706,63 @@ func (s *ServiceJob) insertNewFlight() error {
 }
 
 func (s *ServiceJob) StartAPICheckCronJob() {
-	c := cron.New()
-	cron.New(cron.WithChain(
+	c := cron.New(cron.WithChain(
 		cron.Recover(cron.DefaultLogger), // or use cron.DefaultLogger
 	))
-	slog.Info("update api data job started")
-	c.AddFunc("@weekly", func() {
+	slog.Info("Insert api check job")
+	_, err := c.AddFunc("@weekly", func() {
 		startTime := time.Now()
 		err := s.insertNewCities()
 		slog.Info("City job finished in: ", time.Since(startTime))
 		handleError(err, "Error checking for new cities")
 	})
-	c.AddFunc("@weekly", func() {
+	handleError(err, "Error running cron job")
+
+	_, err = c.AddFunc("@weekly", func() {
 		startTime := time.Now()
 		err := s.insertNewCountries()
 		slog.Info("Country job finished in: ", time.Since(startTime))
 		handleError(err, "Error checking for new countries")
 	})
-	c.AddFunc("@weekly", func() {
+	handleError(err, "Error running cron job")
+
+	_, err = c.AddFunc("@weekly", func() {
 		startTime := time.Now()
 		err := s.insertNewAirports()
 		slog.Info("Airport job finished in: ", time.Since(startTime))
-		handleError(err, "Error checking for new countries")
+		handleError(err, "Error checking for new airports")
 	})
-	c.AddFunc("@weekly", func() {
+	handleError(err, "Error running cron job")
+
+	_, err = c.AddFunc("@weekly", func() {
 		startTime := time.Now()
 		err := s.insertNewAirplanes()
 		slog.Info("Airplane job finished in: ", time.Since(startTime))
-		handleError(err, "Error checking for new Airplane")
+		handleError(err, "Error checking for new airplanes")
 	})
-	c.AddFunc("@weekly", func() {
+	handleError(err, "Error running cron job")
+
+	_, err = c.AddFunc("@weekly", func() {
 		startTime := time.Now()
 		err := s.insertNewTax()
 		slog.Info("Tax job finished in: ", time.Since(startTime))
 		handleError(err, "Error checking for new tax")
 	})
-	c.AddFunc("@weekly", func() {
+	handleError(err, "Error running cron job")
+
+	_, err = c.AddFunc("@weekly", func() {
 		startTime := time.Now()
 		err := s.insertNewAirline()
 		slog.Info("Airline job finished in: ", time.Since(startTime))
 		handleError(err, "Error checking for new airline")
 	})
-	c.AddFunc("@weekly", func() {
+	_, err = c.AddFunc("@daily", func() {
 		startTime := time.Now()
 		err := s.insertNewAircraft()
 		slog.Info("Aircraft job finished in: ", time.Since(startTime))
 		handleError(err, "Error checking for new aircraft")
 	})
-	c.AddFunc("@daily", func() {
-		startTime := time.Now()
-		err := s.insertNewFlight()
-		slog.Info("Flight job finished in: ", time.Since(startTime))
-		handleError(err, "Error checking for new Flight")
-	})
+	handleError(err, "Error running cron job")
 
 	c.Start()
 }

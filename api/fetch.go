@@ -413,7 +413,10 @@ func FetchAndInsertFlightData(conn *pgxpool.Pool) error {
 			"arrival_gate", "arrival_baggage", "arrival_delay", "arrival_scheduled", "arrival_estimated",
 			"arrival_actual", "arrival_estimated_runway", "arrival_actual_runway", "flight_number", "flight_iata",
 			"flight_icao", "codeshared_airline_name", "codeshared_airline_iata", "codeshared_airline_icao",
-			"codeshared_flight_number", "codeshared_flight_iata", "codeshared_flight_icao", "aircraft_id", "live", "created_at",
+			"codeshared_flight_number", "codeshared_flight_iata", "codeshared_flight_icao",
+			"aircraft_registration", "aircraft_iata", "aircraft_icao", "aircraft_icao25", "live_updated",
+			"live_latitude", "live_longitude", "live_altitude", "live_direction", "live_speed_horizontal",
+			"live_speed_vertical", "live_is_ground", "created_at",
 		},
 		pgx.CopyFromSlice(len(res.Data), func(i int) ([]interface{}, error) {
 			id := uuid.New()
@@ -431,7 +434,12 @@ func FetchAndInsertFlightData(conn *pgxpool.Pool) error {
 				res.Data[i].Flight.Codeshared.AirlineName,
 				res.Data[i].Flight.Codeshared.AirlineIata, res.Data[i].Flight.Codeshared.AirlineIcao,
 				res.Data[i].Flight.Codeshared.FlightNumber, res.Data[i].Flight.Codeshared.FlightIata,
-				res.Data[i].Flight.Codeshared.FlightIcao, res.Data[i].Aircraft, res.Data[i].Live,
+				res.Data[i].Flight.Codeshared.FlightIcao, res.Data[i].Aircraft.AircraftRegistration,
+				res.Data[i].Aircraft.AircraftIata, res.Data[i].Aircraft.AircraftIcao, res.Data[i].Aircraft.AircraftIcao24,
+				res.Data[i].Live.LiveUpdated, res.Data[i].Live.LiveLatitude, res.Data[i].Live.LiveLongitude,
+				res.Data[i].Live.LiveAltitude, res.Data[i].Live.LiveDirection, res.Data[i].Live.LiveSpeedHorizontal,
+				res.Data[i].Live.LiveSpeedVertical, res.Data[i].Live.LiveIsGround,
+
 				formatTime(time.Now()),
 			}, nil
 		}),

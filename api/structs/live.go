@@ -17,8 +17,8 @@ const (
 
 type LiveFlights struct {
 	ID           uuid.UUID    `db:"id"`
-	FlightDate   string       `json:"flight_date"`
-	FlightStatus FlightStatus `json:"flight_status"`
+	FlightDate   string       `json:"flight_date,omitempty"`
+	FlightStatus FlightStatus `json:"flight_status,omitempty"`
 	Departure    struct {
 		Airport         string      `json:"airport"`
 		Timezone        string      `json:"timezone"`
@@ -32,7 +32,7 @@ type LiveFlights struct {
 		Actual          interface{} `json:"actual"`
 		EstimatedRunway interface{} `json:"estimated_runway"`
 		ActualRunway    interface{} `json:"actual_runway"`
-	} `json:"departure"`
+	} `json:"departure,omitempty"`
 	Arrival struct {
 		Airport         string      `json:"airport"`
 		Timezone        string      `json:"timezone"`
@@ -47,12 +47,12 @@ type LiveFlights struct {
 		Actual          interface{} `json:"actual"`
 		EstimatedRunway interface{} `json:"estimated_runway"`
 		ActualRunway    interface{} `json:"actual_runway"`
-	} `json:"arrival"`
+	} `json:"arrival,omitempty"`
 	Airline struct {
 		Name string `json:"name"`
 		Iata string `json:"iata"`
 		Icao string `json:"icao"`
-	} `json:"airline"`
+	} `json:"airline,omitempty"`
 	Flight struct {
 		Number     string `json:"number"`
 		Iata       string `json:"iata"`
@@ -64,10 +64,25 @@ type LiveFlights struct {
 			FlightNumber string `json:"flight_number"`
 			FlightIata   string `json:"flight_iata"`
 			FlightIcao   string `json:"flight_icao"`
-		} `json:"codeshared"`
+		} `json:"codeshared,omitempty"`
 	} `json:"flight"`
-	Aircraft interface{} `json:"aircraft"`
-	Live     interface{} `json:"live"`
+	Aircraft struct {
+		AircraftRegistration string `json:"registration"`
+		AircraftIata         string `json:"iata"`
+		AircraftIcao         string `json:"icao"`
+		AircraftIcao24       string `json:"icao24"`
+	} `json:"aircraft,omitempty"`
+	Live struct {
+		LiveUpdated         string  `json:"updated"`
+		LiveLatitude        float32 `json:"latitude,omitempty"`
+		LiveLongitude       float32 `json:"longitude,omitempty"`
+		LiveAltitude        int     `json:"altitude"`
+		LiveDirection       float32 `json:"direction"`
+		LiveSpeedHorizontal int     `json:"speed_horizontal"`
+		LiveSpeedVertical   int     `json:"speed_vertical"`
+		LiveIsGround        bool    `json:"is_ground"`
+	} `json:"live,omitempty"`
+	CreatedAt CustomTime `json:"created_at"`
 }
 
 type FlightApiData struct {
