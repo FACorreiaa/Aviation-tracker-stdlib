@@ -50,3 +50,7 @@ type CountryApiData struct {
 	Pagination Pagination `json:"pagination"`
 	Data       []Country  `json:"data"`
 }
+
+func ExtractCityID(c City) int {
+	return c.CityID
+}

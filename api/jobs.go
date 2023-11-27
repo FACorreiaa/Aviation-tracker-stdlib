@@ -30,6 +30,43 @@ type ServiceJob struct {
 	repo *RepositoryJob
 }
 
+// getTableID retrieves existing table_id from the database
+func (s *ServiceJob) getTableID(query string, id int, tableData []int) ([]int, error) {
+	rows, err := s.repo.Conn.Query(context.Background(), query)
+	if err != nil {
+		handleError(err, "Error querying DB")
+		return nil, err
+	}
+	defer rows.Close()
+
+	var existingIDs []int
+
+	for rows.Next() {
+		if err := rows.Scan(&id); err != nil {
+			handleError(err, "Error scanning IDs")
+			return nil, err
+		}
+		existingIDs = append(existingIDs, id)
+	}
+
+	return tableData, nil
+}
+
+// findNewData slcies version
+func (s *ServiceJob) findNewData(apiData []structs.City, tableData []int) []structs.City {
+	var newData []structs.City
+
+	for _, a := range apiData {
+		if hasKey := slices.ContainsFunc(tableData, func(cityID int) bool {
+			return cityID == a.CityID
+		}); !hasKey {
+			newData = append(newData, a)
+		}
+	}
+
+	return newData
+}
+
 // getExistingID retrieves existing table_id from the database
 func (s *ServiceJob) getExistingID(query string, id int, tableData []int) ([]int, error) {
 	rows, err := s.repo.Conn.Query(context.Background(), query)
@@ -150,91 +187,6 @@ func (s *ServiceJob) findNewAircraftData(apiData []structs.Aircraft, tableData [
 
 	return newData
 }
-
-// findNewCityData identifies new city data by comparing the API data with existing data
-//func (s *ServiceJob) findNewCityData(apiData []structs.City, tableData map[int]struct{}) []structs.City {
-//	var newData []structs.City
-//
-//	for _, a := range apiData {
-//		if _, exists := tableData[a.CityID]; !exists {
-//			newData = append(newData, a)
-//		}
-//	}
-//
-//	return newData
-//}
-//
-//func (s *ServiceJob) findNewCountryData(apiData []structs.Country, tableData map[int]struct{}) []structs.Country {
-//	var newData []structs.Country
-//
-//	for _, a := range apiData {
-//		if _, exists := tableData[a.CountryIsoNumeric]; !exists {
-//			newData = append(newData, a)
-//		}
-//	}
-//
-//	return newData
-//}
-//
-//func (s *ServiceJob) findNewAirportData(apiData []structs.Airport, tableData map[int]struct{}) []structs.Airport {
-//	var newData []structs.Airport
-//
-//	for _, a := range apiData {
-//		if _, exists := tableData[a.AirportId]; !exists {
-//			newData = append(newData, a)
-//		}
-//	}
-//
-//	return newData
-//}
-//
-//func (s *ServiceJob) findNewAirplaneData(apiData []structs.Airplane, tableData map[int]struct{}) []structs.Airplane {
-//	var newData []structs.Airplane
-//
-//	for _, a := range apiData {
-//		if _, exists := tableData[a.AirplaneId]; !exists {
-//			newData = append(newData, a)
-//		}
-//	}
-//
-//	return newData
-//}
-//
-//func (s *ServiceJob) findNewTaxData(apiData []structs.Tax, tableData map[int]struct{}) []structs.Tax {
-//	var newData []structs.Tax
-//
-//	for _, a := range apiData {
-//		if _, exists := tableData[a.TaxId]; !exists {
-//			newData = append(newData, a)
-//		}
-//	}
-//
-//	return newData
-//}
-//
-//func (s *ServiceJob) findNewAirlineData(apiData []structs.Airline, tableData map[int]struct{}) []structs.Airline {
-//	var newData []structs.Airline
-//
-//	for _, a := range apiData {
-//		if _, exists := tableData[a.AirlineId]; !exists {
-//			newData = append(newData, a)
-//		}
-//	}
-//
-//	return newData
-//}
-//
-//func (s *ServiceJob) findNewAircraftData(apiData []structs.Aircraft, tableData map[int]struct{}) []structs.Aircraft {
-//	var newData []structs.Aircraft
-//
-//	for _, a := range apiData {
-//		if _, exists := tableData[a.PlaneTypeId]; !exists {
-//			newData = append(newData, a)
-//		}
-//	}
-//
-//	return newData
-//}
 
 func (s *ServiceJob) insertNewCities() error {
 
