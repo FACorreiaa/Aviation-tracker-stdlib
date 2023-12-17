@@ -2,6 +2,7 @@ package controller
 
 import (
 	"embed"
+	"errors"
 	"github.com/FACorreiaa/go-ollama/core/account"
 	"github.com/go-playground/form/v4"
 	"github.com/go-playground/locales/en"
@@ -41,8 +42,8 @@ func Router(pool *pgxpool.Pool, sessionSecret []byte, redisClient *redis.Client)
 	translator, _ := ut.New(en.New(), en.New()).GetTranslator("en")
 	if err := en_translations.RegisterDefaultTranslations(validate, translator); err != nil {
 		slog.Error("Error registering translations", "error", err)
-
 	}
+
 	formDecoder := form.NewDecoder()
 
 	r := mux.NewRouter()
@@ -101,23 +102,24 @@ func handler(fn func(w http.ResponseWriter, r *http.Request) error) http.Handler
 }
 
 func (h *Handlers) formErrors(err error) []string {
-	decodeErrors, isDecodeError := err.(form.DecodeErrors)
+	var decodeErrors form.DecodeErrors
+	isDecodeError := errors.As(err, &decodeErrors)
 	if isDecodeError {
-		errors := []string{}
+		var errs []string
 		for _, decodeError := range decodeErrors {
-			errors = append(errors, decodeError.Error())
+			errs = append(errs, decodeError.Error())
 		}
 
-		return errors
+		return errs
 	}
 
 	validateErrors, isValidateError := err.(validator.ValidationErrors)
 	if isValidateError {
-		errors := []string{}
+		var errs []string
 		for _, validateError := range validateErrors {
-			errors = append(errors, validateError.Translate(h.translator))
+			errs = append(errs, validateError.Translate(h.translator))
 		}
-		return errors
+		return errs
 	}
 
 	return []string{err.Error()}

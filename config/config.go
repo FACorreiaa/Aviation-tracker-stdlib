@@ -31,7 +31,7 @@ type DatabaseConfig struct {
 type RedisConfig struct {
 	Host     string
 	Password string
-	Db       int
+	DB       int
 }
 
 type ServerConfig struct {
@@ -158,7 +158,7 @@ func NewRedisConfig() (*RedisConfig, error) {
 	return &RedisConfig{
 		Host:     host,
 		Password: pass,
-		Db:       0,
+		DB:       0,
 	}, nil
 }
 

@@ -88,11 +88,11 @@ func (a *Accounts) Login(ctx context.Context, form LoginForm) (*Token, error) {
 	return &token, nil
 }
 
-func (h *Accounts) UserFromSessionToken(ctx context.Context, token Token) (*User, error) {
+func (a *Accounts) UserFromSessionToken(ctx context.Context, token Token) (*User, error) {
 	//key := REDIS_PREFIX + string(token)
 	// Retrieve user ID from Redis
 	fmt.Println("Retrieving user ID from Redis for token:", token)
-	userID, err := h.redisClient.Get(ctx, token).Result()
+	userID, err := a.redisClient.Get(ctx, token).Result()
 	fmt.Println("Retrieved user ID from Redis:", userID)
 	if err != nil {
 		if errors.Is(err, redis.Nil) {
@@ -104,7 +104,7 @@ func (h *Accounts) UserFromSessionToken(ctx context.Context, token Token) (*User
 	}
 
 	// Retrieve user details from your data store (PostgreSQL in this case)
-	rows, err := h.pgpool.Query(
+	rows, err := a.pgpool.Query(
 		ctx,
 		`
 		select
